@@ -187,6 +187,10 @@ svg {
   display: none;
 }
 
+.js .opening[hidden] {
+  display: none;
+}
+
 .js .opening {
   --env-w: min(72vw, 650px);
   --env-h: calc(var(--env-w) * 0.61);
@@ -350,6 +354,7 @@ svg {
   clip-path: polygon(0 0, 100% 0, 50% 100%);
   transform-origin: 50% 0;
   transform-style: preserve-3d;
+  backface-visibility: hidden;
   transition: transform 0.9s var(--ease-out) 0.2s;
 }
 
@@ -419,11 +424,11 @@ svg {
 .letter-preview {
   position: absolute;
   z-index: 3;
-  bottom: 7%;
+  bottom: 0;
   left: 8%;
   display: flex;
   width: 84%;
-  height: 116%;
+  height: 100%;
   flex-direction: column;
   align-items: center;
   padding: 8% 7% 5%;
@@ -434,8 +439,8 @@ svg {
     var(--paper-bright);
   box-shadow: 0 0.6rem 1.5rem rgba(0, 0, 0, 0.1);
   text-align: center;
-  transform: translateY(43%);
-  transition: transform 1.25s var(--ease-out) 0.72s;
+  transform: translateY(0);
+  transition: transform 1.2s var(--ease-out) 0.65s;
 }
 
 .letter-preview::before,
@@ -610,7 +615,7 @@ svg {
 }
 
 .opening.is-opening .letter-preview {
-  transform: translateY(-58%);
+  transform: translateY(-72%);
 }
 
 .opening.is-opening .wax-seal__rim,
@@ -1688,7 +1693,7 @@ svg {
   }
 
   .opening.is-opening .letter-preview {
-    transform: translateY(-66%);
+    transform: translateY(-76%);
   }
 
   .hero {
@@ -1852,3 +1857,5 @@ svg {
     transform: none;
   }
 }
+
+.opening.is-opening .wax-seal { outline: none; pointer-events: none; }
