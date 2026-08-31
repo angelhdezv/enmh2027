@@ -19,6 +19,7 @@ function openExperience() {
   opening.dataset.state = 'opening';
   seal.setAttribute('aria-expanded', 'true');
   opening.classList.add('is-opening');
+  seal.blur();
 
   const leaveDelay = motionIsReduced.matches ? 80 : 1850;
   window.setTimeout(() => {
