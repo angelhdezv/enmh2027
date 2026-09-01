@@ -277,8 +277,11 @@ svg {
   background: var(--paper);
   border: 1px solid #fff;
   box-shadow: 0 10px 25px rgba(31, 7, 18, 0.18);
-  transform: translateY(0);
-  transition: transform 1.05s var(--ease-out) 540ms;
+  clip-path: inset(0 0 58% 0);
+  transform: translateY(58%);
+  transition:
+    transform 1.05s var(--ease-out) 580ms,
+    clip-path 1.05s var(--ease-out) 580ms;
 }
 
 .letter-preview::before {
@@ -362,8 +365,10 @@ svg {
   z-index: 7;
   height: 65%;
   transform-origin: 50% 0;
-  transform-style: preserve-3d;
-  transition: transform 850ms cubic-bezier(0.62, 0, 0.32, 1) 120ms, z-index 0ms linear 500ms;
+  transition:
+    transform 780ms cubic-bezier(0.62, 0, 0.32, 1) 100ms,
+    opacity 160ms ease 700ms,
+    z-index 0ms linear 440ms;
 }
 
 .envelope__flap-front,
@@ -372,7 +377,6 @@ svg {
   inset: 0;
   display: block;
   clip-path: polygon(0 0, 100% 0, 50% 100%);
-  backface-visibility: hidden;
 }
 
 .envelope__flap-front {
@@ -380,10 +384,7 @@ svg {
 }
 
 .envelope__flap-back {
-  background:
-    linear-gradient(150deg, rgba(255, 255, 255, 0.05), transparent 50%),
-    #541231;
-  transform: rotateX(180deg);
+  display: none;
 }
 
 .wax-seal {
@@ -486,11 +487,13 @@ svg {
 }
 
 .opening.is-opening .envelope__flap {
-  z-index: 2;
-  transform: rotateX(180deg);
+  z-index: 1;
+  opacity: 0;
+  transform: scaleY(-1);
 }
 
 .opening.is-opening .letter-preview {
+  clip-path: inset(0);
   transform: translateY(-74%);
 }
 
