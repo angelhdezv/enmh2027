@@ -23,7 +23,7 @@
       rel="stylesheet"
     >
     <link rel="icon" href="assets/monograma-enmh.svg" type="image/svg+xml">
-    <link rel="stylesheet" href="styles.css?v=0.0.2-envelope-fix">
+    <link rel="stylesheet" href="styles.css?v=0.0.2-brand-fix">
     <script>
       document.documentElement.classList.add('js', 'intro-active');
       if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
@@ -263,7 +263,18 @@
         <footer class="paper__footer">
           <span>ENMH · IPN · MMXXVII</span>
           <strong>22 · 05 · 2027</strong>
-          <a href="https://caele.mx/" target="_blank" rel="noreferrer">Invitación por Caele</a>
+          <div class="footer__credit">
+            <p class="footer__developed">Developed by</p>
+            <a
+              class="footer__brand"
+              href="https://caele.mx/"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Visitar Cáele.mx"
+            >
+              <img src="assets/branding/caele-logo.svg" alt="Cáele.mx">
+            </a>
+          </div>
         </footer>
       </article>
     </main>

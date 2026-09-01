@@ -1104,9 +1104,36 @@ svg {
   letter-spacing: 0.12em;
 }
 
-.paper__footer a {
+.footer__credit {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.75rem;
+}
+
+.footer__developed {
+  margin: 0;
+  color: var(--ink-soft);
+  font-size: 0.55rem;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.footer__brand {
+  display: inline-flex;
+  inline-size: clamp(7rem, 25vw, 10rem);
   text-decoration: none;
-  border-bottom: 1px solid var(--line);
+  transition: transform 180ms ease;
+}
+
+.footer__brand:hover {
+  transform: scale(1.03);
+}
+
+.footer__brand img {
+  inline-size: 100%;
+  block-size: auto;
 }
 
 /* Dialog and feedback */
@@ -1334,6 +1361,12 @@ svg {
     flex-direction: column;
     justify-content: center;
     gap: 0.65rem;
+  }
+
+  .footer__credit {
+    flex-direction: column;
+    justify-content: center;
+    gap: 0.35rem;
   }
 }
 
