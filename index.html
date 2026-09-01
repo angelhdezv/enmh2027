@@ -3,16 +3,16 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="theme-color" content="#6f1d46">
+    <meta name="theme-color" content="#64163b">
     <meta
       name="description"
-      content="Invitación digital de la Generación 2027 de Médico Cirujano y Homeópata, ENMH · IPN."
-   >
+      content="Invitación de la Generación 2027 de Médico Cirujano y Homeópata, ENMH · IPN. 22 de mayo de 2027, Jardín Volterra."
+    >
     <meta property="og:title" content="Generación 2027 · ENMH">
     <meta
       property="og:description"
-      content="Una noche para celebrar todo lo que nos trajo hasta aquí."
-   >
+      content="Celebremos el cierre de una historia y el inicio de todo lo que sigue."
+    >
     <meta property="og:type" content="website">
     <title>Generación 2027 · ENMH</title>
 
@@ -21,13 +21,18 @@
     <link
       href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,500&amp;family=Noto+Sans:wght@300;400;500;600;700&amp;display=swap"
       rel="stylesheet"
-   >
+    >
     <link rel="icon" href="assets/monograma-enmh.svg" type="image/svg+xml">
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="styles.css?v=0.0.2">
     <script>
-      document.documentElement.classList.add('js');
+      document.documentElement.classList.add('js', 'intro-active');
+      if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+      if (location.hash) {
+        history.replaceState(null, '', location.pathname + location.search);
+      }
+      window.scrollTo(0, 0);
     </script>
-    <script src="script.js" defer></script>
+    <script src="script.js?v=0.0.2" defer></script>
   </head>
 
   <body>
@@ -35,27 +40,49 @@
 
     <svg class="svg-sprite" aria-hidden="true">
       <symbol id="icon-asclepio" viewBox="0 0 64 96">
-        <path d="M32 5v86" />
-        <path d="M22 23c0-8 20-8 20 1 0 9-20 10-20 19 0 10 20 9 20 19 0 9-20 10-20 19" />
-        <path d="M20 18c4 1 7-1 9-5-5-1-8 1-9 5Z" />
+        <path d="M32 5v86"></path>
+        <path d="M22 23c0-8 20-8 20 1 0 9-20 10-20 19 0 10 20 9 20 19 0 9-20 10-20 19"></path>
+        <path d="M20 18c4 1 7-1 9-5-5-1-8 1-9 5Z"></path>
       </symbol>
       <symbol id="icon-calendar" viewBox="0 0 24 24">
-        <path d="M5 3v3M19 3v3M3.5 9.5h17M5 5h14a2 2 0 0 1 2 2v13H3V7a2 2 0 0 1 2-2Z" />
+        <path d="M5 3v3M19 3v3M3.5 9.5h17M5 5h14a2 2 0 0 1 2 2v13H3V7a2 2 0 0 1 2-2Z"></path>
       </symbol>
       <symbol id="icon-pin" viewBox="0 0 24 24">
-        <path d="M20 10c0 5.5-8 11-8 11S4 15.5 4 10a8 8 0 1 1 16 0Z" />
-        <circle cx="12" cy="10" r="2.5" />
+        <path d="M20 10c0 5.5-8 11-8 11S4 15.5 4 10a8 8 0 1 1 16 0Z"></path>
+        <circle cx="12" cy="10" r="2.5"></circle>
       </symbol>
       <symbol id="icon-arrow" viewBox="0 0 24 24">
-        <path d="M5 12h14M14 7l5 5-5 5" />
+        <path d="M5 12h14M14 7l5 5-5 5"></path>
+      </symbol>
+      <symbol id="icon-share" viewBox="0 0 24 24">
+        <circle cx="18" cy="5" r="2.5"></circle>
+        <circle cx="6" cy="12" r="2.5"></circle>
+        <circle cx="18" cy="19" r="2.5"></circle>
+        <path d="m8.2 10.8 7.6-4.5M8.2 13.2l7.6 4.5"></path>
       </symbol>
       <symbol id="icon-close" viewBox="0 0 24 24">
-        <path d="m5 5 14 14M19 5 5 19" />
+        <path d="m5 5 14 14M19 5 5 19"></path>
+      </symbol>
+      <symbol id="icon-glass" viewBox="0 0 24 24">
+        <path d="M5 3h14l-1 6a6 6 0 0 1-12 0L5 3ZM12 15v6M8 21h8"></path>
+      </symbol>
+      <symbol id="icon-plate" viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="8.5"></circle>
+        <circle cx="12" cy="12" r="4.5"></circle>
+      </symbol>
+      <symbol id="icon-music" viewBox="0 0 24 24">
+        <path d="M9 18V6l10-2v12M9 9l10-2"></path>
+        <circle cx="6.5" cy="18" r="2.5"></circle>
+        <circle cx="16.5" cy="16" r="2.5"></circle>
+      </symbol>
+      <symbol id="icon-camera" viewBox="0 0 24 24">
+        <path d="M4 7h4l1.5-2h5L16 7h4v12H4V7Z"></path>
+        <circle cx="12" cy="13" r="3.5"></circle>
       </symbol>
     </svg>
 
     <div class="opening" id="opening" role="dialog" aria-modal="true" aria-labelledby="opening-title">
-      <button class="opening__skip" id="skipOpening" type="button">Ver invitación</button>
+      <button class="opening__skip" id="skipOpening" type="button">Saltar intro</button>
 
       <div class="opening__ambient" aria-hidden="true">
         <span class="opening__grain"></span>
@@ -75,281 +102,184 @@
 
           <article class="letter-preview">
             <div class="letter-preview__rule"></div>
-            <img src="assets/enmh-escudo.jpg" alt="" width="64" height="80">
+            <img src="assets/enmh-escudo.jpg" alt="" width="56" height="70">
             <p>Escuela Nacional de<br>Medicina y Homeopatía</p>
             <strong>Generación<br><span>2027</span></strong>
             <small>Médico Cirujano y Homeópata</small>
+            <time datetime="2027-05-22">22 · MAYO · 2027</time>
           </article>
-          <div class="envelope__face">
-            <svg class="envelope__botanical envelope__botanical--left" viewBox="0 0 180 260">
-              <path d="M22 244C64 191 62 112 132 22" />
-              <path d="M52 204c-26-4-37-19-42-38 25 2 38 15 42 38ZM70 169c-22-10-29-28-27-47 24 9 32 26 27 47ZM89 129c-18-12-21-29-16-46 20 11 26 28 16 46ZM111 86c-13-11-14-26-8-40 16 10 19 25 8 40Z" />
-              <path d="M61 191c27 1 42-10 51-28-25-3-41 7-51 28ZM79 153c23-2 36-14 42-31-23 0-37 10-42 31ZM99 112c19-4 29-16 32-31-19 2-30 12-32 31Z" />
-            </svg>
-            <svg class="envelope__botanical envelope__botanical--right" viewBox="0 0 180 260">
-              <path d="M22 244C64 191 62 112 132 22" />
-              <path d="M52 204c-26-4-37-19-42-38 25 2 38 15 42 38ZM70 169c-22-10-29-28-27-47 24 9 32 26 27 47ZM89 129c-18-12-21-29-16-46 20 11 26 28 16 46ZM111 86c-13-11-14-26-8-40 16 10 19 25 8 40Z" />
-            </svg>
-            <span class="envelope__mineral envelope__mineral--one"></span>
-            <span class="envelope__mineral envelope__mineral--two"></span>
-            <span class="envelope__edition">PROM · MMXXVII</span>
+
+          <div class="envelope__face"></div>
+          <div class="envelope__flap">
+            <span class="envelope__flap-front"></span>
+            <span class="envelope__flap-back"></span>
           </div>
-          <div class="envelope__flap"></div>
         </div>
 
         <button
           class="wax-seal"
-          id="openInvite"
+          id="openSeal"
           type="button"
-          aria-label="Romper el sello y abrir la invitación"
+          aria-label="Abrir la invitación"
           aria-expanded="false"
         >
-          <span class="wax-seal__half wax-seal__half--left"></span>
-          <span class="wax-seal__half wax-seal__half--right"></span>
-          <span class="wax-seal__rim" aria-hidden="true"></span>
-          <svg aria-hidden="true" viewBox="0 0 64 82">
-            <use href="#icon-asclepio"></use>
-          </svg>
-          <span class="wax-seal__letters" aria-hidden="true">ENMH</span>
+          <span class="wax-seal__half wax-seal__half--left" aria-hidden="true">
+            <span class="wax-seal__surface"><svg><use href="#icon-asclepio"></use></svg></span>
+          </span>
+          <span class="wax-seal__half wax-seal__half--right" aria-hidden="true">
+            <span class="wax-seal__surface"><svg><use href="#icon-asclepio"></use></svg></span>
+          </span>
+          <span class="sr-only">Abrir</span>
         </button>
       </div>
 
-      <p class="opening__hint" id="openingHint">
-        <span></span>Toca el sello para abrir
-      </p>
+      <p class="opening__hint">Toca el sello para abrir</p>
     </div>
 
-    <main id="invitacion" tabindex="-1">
-      <header class="hero">
-        <div class="hero__topbar reveal">
-          <div class="institution-lockup">
-            <img
-              src="assets/enmh-escudo.jpg"
-              alt="Emblema de la Escuela Nacional de Medicina y Homeopatía"
-              width="55"
-              height="70"
-           >
-            <span>
-              <b>Instituto Politécnico Nacional</b>
-              Escuela Nacional de Medicina y Homeopatía
-            </span>
-          </div>
-          <p>Ciudad de México<br><b>MMXXVII</b></p>
-        </div>
+    <main class="invitation" id="invitacion" tabindex="-1">
+      <div class="invitation__flap" aria-hidden="true"></div>
 
-        <div class="hero__art" aria-hidden="true">
-          <svg class="hero__wing hero__wing--left" viewBox="0 0 340 430">
-            <path d="M307 25C251 102 216 165 167 251 113 347 50 392 17 407" />
-            <path d="M277 71c-56 17-91 51-111 96 54-7 91-38 111-96ZM230 151c-60 5-101 34-129 77 57 4 99-22 129-77ZM181 237c-58-3-104 18-140 57 56 12 102-7 140-57ZM132 316c-46-5-83 8-113 39 43 12 81 0 113-39Z" />
-            <path d="M292 61c2 57-15 99-51 130-11-51 5-95 51-130ZM249 143c-2 57-25 97-66 122-5-52 17-94 66-122ZM200 231c-9 50-35 84-77 101 3-47 29-82 77-101Z" />
-          </svg>
-          <svg class="hero__wing hero__wing--right" viewBox="0 0 340 430">
-            <path d="M307 25C251 102 216 165 167 251 113 347 50 392 17 407" />
-            <path d="M277 71c-56 17-91 51-111 96 54-7 91-38 111-96ZM230 151c-60 5-101 34-129 77 57 4 99-22 129-77ZM181 237c-58-3-104 18-140 57 56 12 102-7 140-57ZM132 316c-46-5-83 8-113 39 43 12 81 0 113-39Z" />
-          </svg>
-          <span class="hero__mineral hero__mineral--one"></span>
-          <span class="hero__mineral hero__mineral--two"></span>
-        </div>
+      <article class="paper">
+        <header class="paper__header">
+          <a class="lockup" href="#invitacion" aria-label="Inicio de la invitación">
+            <img src="assets/enmh-escudo.jpg" alt="" width="38" height="48">
+            <span><strong>ENMH</strong><small>Instituto Politécnico Nacional</small></span>
+          </a>
 
-        <div class="hero__content">
-          <p class="eyebrow reveal">Médico Cirujano y Homeópata</p>
-          <p class="hero__pretitle reveal">Generación</p>
-          <h2 class="hero__year reveal">
-            <span>20</span><i aria-hidden="true"></i><span>27</span>
-          </h2>
-          <p class="hero__statement reveal">Juramos sanar.<br><em>Hoy celebramos.</em></p>
+          <button class="utility-button" id="shareInvitation" type="button">
+            <svg aria-hidden="true"><use href="#icon-share"></use></svg>
+            Compartir
+          </button>
+        </header>
 
-          <div class="hero__date reveal">
-            <span>Sábado</span>
-            <strong>27</strong>
-            <span>Noviembre · 20:00 h</span>
-          </div>
+        <div class="paper__grid">
+          <section class="cover" aria-labelledby="generation-title">
+            <div class="cover__botanical cover__botanical--left" aria-hidden="true"></div>
+            <div class="cover__botanical cover__botanical--right" aria-hidden="true"></div>
 
-          <div class="hero__actions reveal">
-            <button class="button button--solid" type="button" data-open-rsvp>
-              Confirmar asistencia
-              <svg aria-hidden="true"><use href="#icon-arrow"></use></svg>
-            </button>
-            <button class="button button--line" type="button" id="addCalendar">
-              Agregar al calendario
-            </button>
-          </div>
-        </div>
+            <p class="eyebrow">Escuela Nacional de Medicina y Homeopatía</p>
+            <p class="cover__kicker">Generación</p>
+            <h1 id="generation-title">2027</h1>
+            <p class="cover__degree">Médico Cirujano y Homeópata</p>
 
-        <a class="hero__scroll" href="#historia" aria-label="Continuar hacia la invitación">
-          <span></span>Descubre la noche
-        </a>
-      </header>
+            <div class="cover__ornament" aria-hidden="true">
+              <span></span>
+              <svg><use href="#icon-asclepio"></use></svg>
+              <span></span>
+            </div>
 
-      <div class="ticker" aria-hidden="true">
-        <div>
-          <span>CIENCIA · HUMANISMO · VOCACIÓN · GENERACIÓN 2027 · </span>
-          <span>CIENCIA · HUMANISMO · VOCACIÓN · GENERACIÓN 2027 · </span>
-        </div>
-      </div>
+            <p class="cover__statement">Juramos sanar.<br><em>Hoy celebramos.</em></p>
 
-      <section class="story section--wine" id="historia">
-        <div class="section-index reveal">01 / NUESTRA HISTORIA</div>
-        <div class="story__grid">
-          <div class="story__headline reveal">
-            <p class="eyebrow eyebrow--light">Llegamos hasta aquí</p>
-            <h2>Años de estudio.<br>Una noche <em>inolvidable.</em></h2>
-          </div>
-          <div class="story__copy reveal">
-            <p>
-              Entre aulas, prácticas, guardias y preguntas sin respuesta fácil,
-              aprendimos que ejercer la medicina también es una forma de acompañar.
+            <div class="event-date">
+              <span>Sábado</span>
+              <strong>22</strong>
+              <span>Mayo · 2027</span>
+            </div>
+
+            <p class="cover__venue">
+              <svg aria-hidden="true"><use href="#icon-pin"></use></svg>
+              Jardín Volterra · Zona Esmeralda
             </p>
-            <p>
-              Esta noche no cierra una etapa: abre todo lo que imaginamos juntos.
-              Queremos celebrarla con quienes fueron parte del camino.
+            <p class="cover__pending">Horario exacto por confirmar</p>
+
+            <div class="cover__actions">
+              <button class="button button--primary" type="button" data-open-rsvp>
+                Confirmar asistencia
+                <svg aria-hidden="true"><use href="#icon-arrow"></use></svg>
+              </button>
+              <button class="button button--text" id="addCalendar" type="button">
+                <svg aria-hidden="true"><use href="#icon-calendar"></use></svg>
+                Guardar la fecha
+              </button>
+            </div>
+
+            <p class="cover__motto">La técnica al servicio de la patria</p>
+          </section>
+
+          <section class="program" aria-labelledby="program-title">
+            <p class="eyebrow">El encuentro</p>
+            <h2 id="program-title">Una noche para recordar lo vivido.</h2>
+            <p class="program__intro">
+              Nueve horas para celebrar el final de una etapa. La secuencia y los horarios definitivos se
+              compartirán más adelante.
             </p>
-            <blockquote>“La Técnica al Servicio de la Patria.”</blockquote>
+
+            <ol class="timeline">
+              <li>
+                <span class="timeline__number">01</span>
+                <div><h3>Recepción y cóctel</h3><p>Bienvenida, fotografías y encuentro con la generación.</p></div>
+              </li>
+              <li>
+                <span class="timeline__number">02</span>
+                <div><h3>Ceremonia de generación</h3><p>Presentación, último pase de lista y ceremonia de batas.</p></div>
+              </li>
+              <li>
+                <span class="timeline__number">03</span>
+                <div><h3>Cena y brindis</h3><p>Cena en cuatro tiempos, anuario y brindis con champagne.</p></div>
+              </li>
+              <li>
+                <span class="timeline__number">04</span>
+                <div><h3>Celebración</h3><p>DJ, música en vivo y tornafiesta para cerrar la noche.</p></div>
+              </li>
+            </ol>
+
+            <blockquote>
+              “El cierre de una historia es también el comienzo de todo lo que sigue.”
+            </blockquote>
+          </section>
+        </div>
+
+        <section class="essentials" aria-label="Información del evento">
+          <div class="essential essential--included">
+            <p class="eyebrow">Tu boleto incluye</p>
+            <ul class="included-list">
+              <li><svg aria-hidden="true"><use href="#icon-plate"></use></svg><span>Cena en cuatro tiempos</span></li>
+              <li><svg aria-hidden="true"><use href="#icon-glass"></use></svg><span>Barra libre y tornafiesta</span></li>
+              <li><svg aria-hidden="true"><use href="#icon-music"></use></svg><span>DJ y entretenimiento en vivo</span></li>
+              <li><svg aria-hidden="true"><use href="#icon-camera"></use></svg><span>Fotografía panorámica</span></li>
+            </ul>
           </div>
-        </div>
 
-        <div class="story__mark reveal" aria-hidden="true">
-          <span>EN</span>
-          <svg viewBox="0 0 64 96"><use href="#icon-asclepio"></use></svg>
-          <span>MH</span>
-        </div>
-      </section>
-
-      <section class="details section--paper" id="detalles">
-        <div class="section-index section-index--dark reveal">02 / LA CITA</div>
-        <div class="details__intro reveal">
-          <p class="eyebrow">Aparta la fecha</p>
-          <h2>Una noche.<br><em>Todos nosotros.</em></h2>
-        </div>
-
-        <div class="date-poster reveal" role="group" aria-label="27 de noviembre de 2027">
-          <span class="date-poster__day">SÁB</span>
-          <strong>27</strong>
-          <span class="date-poster__month">NOV · 2027</span>
-          <span class="date-poster__line"></span>
-          <span class="date-poster__time">20:00<br>HRS</span>
-        </div>
-
-        <div class="detail-cards">
-          <article class="detail-card reveal">
-            <span class="detail-card__number">01</span>
-            <svg aria-hidden="true"><use href="#icon-calendar"></use></svg>
-            <h3>Fecha</h3>
-            <p>Sábado 27 de noviembre de 2027</p>
-            <button class="text-link" type="button" data-calendar>Guardar fecha →</button>
-          </article>
-          <article class="detail-card reveal">
-            <span class="detail-card__number">02</span>
-            <svg aria-hidden="true"><use href="#icon-pin"></use></svg>
-            <h3>Lugar</h3>
-            <p>Ciudad de México<br><small>Sede por anunciar</small></p>
+          <div class="essential">
+            <p class="eyebrow">El lugar</p>
+            <h2>Jardín Volterra</h2>
+            <p>Zona Esmeralda, Estado de México.<br>La dirección completa se compartirá próximamente.</p>
             <a
               class="text-link"
-              href="https://www.google.com/maps/search/?api=1&amp;query=Ciudad+de+México"
+              href="https://www.google.com/maps/search/?api=1&amp;query=Jard%C3%ADn+Volterra+Zona+Esmeralda"
               target="_blank"
               rel="noreferrer"
-            >Ver zona →</a>
-          </article>
-          <article class="detail-card reveal">
-            <span class="detail-card__number">03</span>
-            <svg class="detail-card__staff" aria-hidden="true" viewBox="0 0 64 96">
-              <use href="#icon-asclepio"></use>
-            </svg>
-            <h3>Celebración</h3>
-            <p>Cena · brindis · baile<br><small>Acceso con invitación</small></p>
-            <button class="text-link" type="button" data-open-rsvp>Confirmar →</button>
-          </article>
-        </div>
-      </section>
+            >Ver zona en Maps <svg aria-hidden="true"><use href="#icon-arrow"></use></svg></a>
+          </div>
 
-      <section class="countdown section--black" aria-labelledby="countdown-title">
-        <div class="section-index reveal">03 / CUENTA REGRESIVA</div>
-        <div class="countdown__heading reveal">
-          <p class="eyebrow eyebrow--light">Nos vemos en</p>
-          <h2 id="countdown-title">El momento<br><em>que esperábamos.</em></h2>
-        </div>
-        <div class="countdown__numbers reveal" id="countdownClock" aria-hidden="true">
-          <div><strong data-days>000</strong><span>Días</span></div>
-          <i>:</i>
-          <div><strong data-hours>00</strong><span>Horas</span></div>
-          <i>:</i>
-          <div><strong data-minutes>00</strong><span>Min</span></div>
-          <i>:</i>
-          <div><strong data-seconds>00</strong><span>Seg</span></div>
-        </div>
-        <p class="sr-only" id="countdownAccessible"></p>
-      </section>
+          <div class="essential essential--rsvp">
+            <p class="eyebrow">Asistencia</p>
+            <h2>Queremos celebrar contigo.</h2>
+            <p>El acceso personalizado, número de pases y fecha límite se enviarán cuando queden confirmados.</p>
+            <button class="button button--outline" type="button" data-open-rsvp>Ver información</button>
+          </div>
+        </section>
 
-      <section class="dress-code section--paper" id="vestimenta">
-        <div class="section-index section-index--dark reveal">04 / CÓDIGO DE VESTIMENTA</div>
-        <div class="dress-code__copy reveal">
-          <p class="eyebrow">Dress code</p>
-          <h2>Formal<br><em>de noche.</em></h2>
-          <p>
-            Elegancia sin rigidez. Negro, tonos profundos y siluetas de noche.
-            El guinda lo ponemos nosotros.
-          </p>
-          <span class="dress-code__note">Evita blanco total y mezclilla</span>
-        </div>
-
-        <div class="dress-code__art reveal" aria-hidden="true">
-          <svg viewBox="0 0 520 560">
-            <path class="art-fill" d="M138 37c45 23 62 62 53 116l-25 156 84 213H34l79-213-23-156c-9-54 7-93 48-116Z" />
-            <path d="M138 37c45 23 62 62 53 116l-25 156 84 213H34l79-213-23-156c-9-54 7-93 48-116ZM113 309h53M108 155c26 14 52 14 78 0" />
-            <path class="art-fill art-fill--dark" d="M374 34c29 15 47 37 54 66l-22 111 32 311H285l28-311-20-111c8-29 35-51 81-66Z" />
-            <path d="M374 34c29 15 47 37 54 66l-22 111 32 311H285l28-311-20-111c8-29 35-51 81-66ZM314 211h92M334 44l40 65 35-65M374 109v123" />
-          </svg>
-        </div>
-      </section>
-
-      <section class="itinerary section--wine" id="itinerario">
-        <div class="section-index reveal">05 / EL RITMO DE LA NOCHE</div>
-        <div class="itinerary__heading reveal">
-          <p class="eyebrow eyebrow--light">Programa</p>
-          <h2>Que no se nos<br><em>escape nada.</em></h2>
-        </div>
-        <ol class="timeline">
-          <li class="reveal"><time>19:30</time><span></span><div><b>Recepción</b><small>El primer encuentro</small></div></li>
-          <li class="reveal"><time>20:00</time><span></span><div><b>Cena</b><small>Compartimos la mesa</small></div></li>
-          <li class="reveal"><time>22:00</time><span></span><div><b>Brindis</b><small>Por lo vivido y lo que sigue</small></div></li>
-          <li class="reveal"><time>23:00</time><span></span><div><b>Pista abierta</b><small>Hasta que el cuerpo aguante</small></div></li>
-        </ol>
-      </section>
-
-      <section class="closing section--paper">
-        <div class="closing__botanical" aria-hidden="true"></div>
-        <div class="closing__content reveal">
-          <svg aria-hidden="true" viewBox="0 0 64 96"><use href="#icon-asclepio"></use></svg>
-          <p class="eyebrow">Generación 2027</p>
-          <h2>Este logro<br>también es <em>tuyo.</em></h2>
-          <p>Gracias por acompañarnos hasta aquí. Nos encantará celebrar contigo.</p>
-          <button class="button button--solid" type="button" data-open-rsvp>
-            Confirmar asistencia
-            <svg aria-hidden="true"><use href="#icon-arrow"></use></svg>
-          </button>
-        </div>
-        <footer>
+        <footer class="paper__footer">
           <span>ENMH · IPN · MMXXVII</span>
-          <span>La Técnica al Servicio de la Patria</span>
-          <a href="https://caele.mx" target="_blank" rel="noreferrer">Una experiencia Cáele</a>
+          <strong>22 · 05 · 2027</strong>
+          <a href="https://caele.mx/" target="_blank" rel="noreferrer">Invitación por Caele</a>
         </footer>
-      </section>
+      </article>
     </main>
 
-    <dialog class="rsvp-dialog" id="rsvpDialog" aria-labelledby="rsvpTitle">
-      <button class="rsvp-dialog__close" type="button" aria-label="Cerrar">
+    <dialog class="rsvp-dialog" id="rsvpDialog" aria-labelledby="rsvp-title">
+      <button class="dialog-close" id="closeRsvp" type="button" aria-label="Cerrar">
         <svg aria-hidden="true"><use href="#icon-close"></use></svg>
       </button>
-      <span class="rsvp-dialog__seal" aria-hidden="true">
-        <svg viewBox="0 0 64 96"><use href="#icon-asclepio"></use></svg>
-      </span>
-      <p class="eyebrow">Reserva tu lugar</p>
-      <h2 id="rsvpTitle">Confirmación<br><em>próximamente.</em></h2>
+      <p class="eyebrow">Confirmación</p>
+      <h2 id="rsvp-title">Los últimos detalles están por llegar.</h2>
       <p>
-        Estamos afinando los últimos detalles. Muy pronto encontrarás aquí el acceso
-        personal para confirmar asistentes y restricciones alimentarias.
+        El horario exacto, número de pases, código de vestimenta y medio de confirmación se publicarán en
+        cuanto la generación los confirme.
       </p>
-      <button class="button button--solid rsvp-dialog__accept" type="button">Entendido</button>
+      <p class="dialog-note">Por ahora, guarda el sábado 22 de mayo de 2027.</p>
+      <button class="button button--primary" id="dialogCalendar" type="button">Guardar la fecha</button>
     </dialog>
 
     <div class="toast" id="toast" role="status" aria-live="polite"></div>

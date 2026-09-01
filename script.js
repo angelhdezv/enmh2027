@@ -1,258 +1,255 @@
 const EVENT = {
-  name: 'Noche de Graduación · ENMH Generación 2027',
-  start: '2027-11-27T20:00:00-06:00',
-  end: '2027-11-28T04:00:00-06:00',
-  location: 'Ciudad de México, México',
+  name: 'Graduación ENMH · Generación 2027',
+  startDate: '20270522',
+  endDate: '20270523',
+  location: 'Jardín Volterra, Zona Esmeralda, Estado de México',
   description:
-    'Celebración de la Generación 2027 de Médico Cirujano y Homeópata de la Escuela Nacional de Medicina y Homeopatía.',
+    'Celebración de la Generación 2027 de Médico Cirujano y Homeópata, ENMH · IPN. Horario exacto por confirmar.',
 };
 
-const motionIsReduced = window.matchMedia('(prefers-reduced-motion: reduce)');
+const opening = document.querySelector('#opening');
+const invitation = document.querySelector('#invitacion');
+const openSeal = document.querySelector('#openSeal');
+const skipOpening = document.querySelector('#skipOpening');
+const envelopeScene = document.querySelector('#envelopeScene');
+const letterPreview = document.querySelector('.letter-preview');
+const addCalendar = document.querySelector('#addCalendar');
+const dialogCalendar = document.querySelector('#dialogCalendar');
+const shareInvitation = document.querySelector('#shareInvitation');
+const rsvpDialog = document.querySelector('#rsvpDialog');
+const closeRsvp = document.querySelector('#closeRsvp');
+const toast = document.querySelector('#toast');
+const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 
-function openExperience() {
-  const opening = document.querySelector('#opening');
-  const seal = document.querySelector('#openInvite');
-  const invitation = document.querySelector('#invitacion');
+let openingFallback;
+let leavingTimer;
+let toastTimer;
 
-  if (!opening || opening.dataset.state === 'opening') return;
+if ('scrollRestoration' in history) {
+  history.scrollRestoration = 'manual';
+}
 
-  opening.dataset.state = 'opening';
-  seal.setAttribute('aria-expanded', 'true');
-  opening.classList.add('is-opening');
-  seal.blur();
+function forceScrollTop() {
+  const previousBehavior = document.documentElement.style.scrollBehavior;
+  document.documentElement.style.scrollBehavior = 'auto';
+  window.scrollTo(0, 0);
+  document.documentElement.scrollTop = 0;
+  document.body.scrollTop = 0;
 
-  const leaveDelay = motionIsReduced.matches ? 80 : 1850;
-  window.setTimeout(() => {
+  requestAnimationFrame(() => {
+    window.scrollTo(0, 0);
+    document.documentElement.style.scrollBehavior = previousBehavior;
+  });
+}
+
+function setIntroActive(active) {
+  document.documentElement.classList.toggle('intro-active', active);
+  invitation.inert = active;
+}
+
+function resetOpening() {
+  window.clearTimeout(openingFallback);
+  window.clearTimeout(leavingTimer);
+  opening.hidden = false;
+  opening.classList.remove('is-opening', 'is-opened', 'is-leaving');
+  opening.dataset.state = 'idle';
+  openSeal.setAttribute('aria-expanded', 'false');
+  envelopeScene.style.transform = '';
+  setIntroActive(true);
+  forceScrollTop();
+}
+
+function revealInvitation({ immediate = false } = {}) {
+  if (opening.dataset.state === 'complete') return;
+
+  opening.dataset.state = 'complete';
+  opening.classList.add('is-opened');
+  forceScrollTop();
+
+  const leave = () => {
     opening.classList.add('is-leaving');
-    document.body.classList.remove('intro-active');
+    setIntroActive(false);
+    forceScrollTop();
     invitation.focus({ preventScroll: true });
 
-    window.setTimeout(
-      () => {
-        opening.hidden = true;
-      },
-      motionIsReduced.matches ? 20 : 1050,
-    );
-  }, leaveDelay);
-}
+    leavingTimer = window.setTimeout(() => {
+      opening.hidden = true;
+      forceScrollTop();
+    }, immediate ? 0 : 760);
+  };
 
-function skipExperience() {
-  const opening = document.querySelector('#opening');
-  const invitation = document.querySelector('#invitacion');
-
-  if (!opening) return;
-  opening.hidden = true;
-  document.body.classList.remove('intro-active');
-  invitation.focus({ preventScroll: true });
-}
-
-function initializeOpening() {
-  const opening = document.querySelector('#opening');
-  const seal = document.querySelector('#openInvite');
-  const skip = document.querySelector('#skipOpening');
-  const scene = document.querySelector('#envelopeScene');
-
-  if (!opening || !seal || !skip || !scene) return;
-
-  document.body.classList.add('intro-active');
-  seal.addEventListener('click', openExperience);
-  skip.addEventListener('click', skipExperience);
-  window.addEventListener('keydown', (event) => {
-    if (event.key === 'Escape' && !opening.hidden) skipExperience();
-
-    if (event.key === 'Tab' && !opening.hidden) {
-      const movingBack = event.shiftKey;
-      const atFirstControl = document.activeElement === skip;
-      const atLastControl = document.activeElement === seal;
-
-      if ((movingBack && atFirstControl) || (!movingBack && atLastControl)) {
-        event.preventDefault();
-        (movingBack ? seal : skip).focus();
-      }
-    }
-  });
-
-  if (!motionIsReduced.matches && window.matchMedia('(pointer: fine)').matches) {
-    opening.addEventListener('pointermove', (event) => {
-      if (opening.dataset.state === 'opening') return;
-      const x = event.clientX / window.innerWidth - 0.5;
-      const y = event.clientY / window.innerHeight - 0.5;
-      scene.style.transform = `translateY(3%) rotateX(${-y * 2.4}deg) rotateY(${x * 3.5}deg)`;
-    });
-    opening.addEventListener('pointerleave', () => {
-      scene.style.transform = 'translateY(3%) rotateX(0) rotateY(0)';
-    });
+  if (immediate || reducedMotion.matches) {
+    leave();
+  } else {
+    leavingTimer = window.setTimeout(leave, 560);
   }
-
-  window.setTimeout(() => seal.focus({ preventScroll: true }), 250);
 }
 
-function initializeRevealAnimations() {
-  const reveals = document.querySelectorAll('.reveal');
+function openExperience() {
+  if (opening.dataset.state !== 'idle') return;
 
-  if (motionIsReduced.matches || !('IntersectionObserver' in window)) {
-    reveals.forEach((element) => element.classList.add('in-view'));
+  opening.dataset.state = 'opening';
+  openSeal.setAttribute('aria-expanded', 'true');
+  openSeal.blur();
+  envelopeScene.style.transform = '';
+
+  if (reducedMotion.matches) {
+    opening.classList.add('is-opening');
+    revealInvitation({ immediate: true });
     return;
   }
 
-  const observer = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((entry) => {
-        if (!entry.isIntersecting) return;
-        entry.target.classList.add('in-view');
-        observer.unobserve(entry.target);
-      });
-    },
-    { rootMargin: '0px 0px -8% 0px', threshold: 0.12 },
-  );
+  let letterFinished = false;
+  const finishLetter = () => {
+    if (letterFinished) return;
+    letterFinished = true;
+    window.clearTimeout(openingFallback);
+    letterPreview.removeEventListener('transitionend', onLetterTransitionEnd);
+    revealInvitation();
+  };
 
-  reveals.forEach((element) => observer.observe(element));
-}
-
-function pad(value, length = 2) {
-  return String(Math.max(0, value)).padStart(length, '0');
-}
-
-function initializeCountdown() {
-  const target = new Date(EVENT.start).getTime();
-  const days = document.querySelector('[data-days]');
-  const hours = document.querySelector('[data-hours]');
-  const minutes = document.querySelector('[data-minutes]');
-  const seconds = document.querySelector('[data-seconds]');
-  const accessible = document.querySelector('#countdownAccessible');
-
-  if (!days || !hours || !minutes || !seconds || !accessible) return;
-
-  let lastAnnouncedMinute = null;
-
-  const update = () => {
-    const remaining = Math.max(0, target - Date.now());
-    const totalSeconds = Math.floor(remaining / 1000);
-    const dayValue = Math.floor(totalSeconds / 86400);
-    const hourValue = Math.floor((totalSeconds % 86400) / 3600);
-    const minuteValue = Math.floor((totalSeconds % 3600) / 60);
-    const secondValue = totalSeconds % 60;
-
-    days.textContent = pad(dayValue, 3);
-    hours.textContent = pad(hourValue);
-    minutes.textContent = pad(minuteValue);
-    seconds.textContent = pad(secondValue);
-
-    if (minuteValue !== lastAnnouncedMinute) {
-      accessible.textContent = remaining
-        ? `Faltan ${dayValue} días, ${hourValue} horas y ${minuteValue} minutos.`
-        : 'La celebración ha comenzado.';
-      lastAnnouncedMinute = minuteValue;
+  const onLetterTransitionEnd = (event) => {
+    if (event.target === letterPreview && event.propertyName === 'transform') {
+      finishLetter();
     }
   };
 
-  update();
-  window.setInterval(update, 1000);
+  letterPreview.addEventListener('transitionend', onLetterTransitionEnd);
+  openingFallback = window.setTimeout(finishLetter, 1900);
+  requestAnimationFrame(() => opening.classList.add('is-opening'));
 }
 
-function formatCalendarDate(dateString) {
-  return new Date(dateString).toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, '');
+function skipExperience() {
+  if (opening.dataset.state === 'complete') return;
+  opening.classList.add('is-opening');
+  revealInvitation({ immediate: true });
 }
 
-function escapeCalendarText(text) {
-  return text.replace(/([,;\\])/g, '\\$1').replace(/\n/g, '\\n');
+function trapOpeningFocus(event) {
+  if (event.key !== 'Tab' || opening.hidden || opening.dataset.state !== 'idle') return;
+
+  const focusable = [skipOpening, openSeal];
+  const currentIndex = focusable.indexOf(document.activeElement);
+
+  if (event.shiftKey && currentIndex <= 0) {
+    event.preventDefault();
+    focusable.at(-1).focus();
+  } else if (!event.shiftKey && currentIndex === focusable.length - 1) {
+    event.preventDefault();
+    focusable[0].focus();
+  }
+}
+
+function moveEnvelope(event) {
+  if (reducedMotion.matches || opening.dataset.state !== 'idle' || event.pointerType === 'touch') return;
+
+  const x = (event.clientX / window.innerWidth - 0.5) * 8;
+  const y = (event.clientY / window.innerHeight - 0.5) * 5;
+  envelopeScene.style.transform = `translate(calc(-50% + ${x}px), calc(-50% + ${y}px))`;
+}
+
+function resetEnvelopePosition() {
+  if (opening.dataset.state === 'idle') envelopeScene.style.transform = '';
+}
+
+function escapeIcsText(value) {
+  return value.replace(/\\/g, '\\\\').replace(/,/g, '\\,').replace(/;/g, '\\;').replace(/\n/g, '\\n');
 }
 
 function downloadCalendarEvent() {
-  const now = formatCalendarDate(new Date().toISOString());
-  const calendar = [
+  const lines = [
     'BEGIN:VCALENDAR',
     'VERSION:2.0',
-    'PRODID:-//ENMH 2027//Invitacion//ES',
+    'PRODID:-//Caele//ENMH 2027//ES',
     'CALSCALE:GREGORIAN',
-    'METHOD:PUBLISH',
     'BEGIN:VEVENT',
-    `UID:enmh-2027-${Date.now()}@caele.mx`,
-    `DTSTAMP:${now}`,
-    `DTSTART:${formatCalendarDate(EVENT.start)}`,
-    `DTEND:${formatCalendarDate(EVENT.end)}`,
-    `SUMMARY:${escapeCalendarText(EVENT.name)}`,
-    `DESCRIPTION:${escapeCalendarText(EVENT.description)}`,
-    `LOCATION:${escapeCalendarText(EVENT.location)}`,
+    `UID:enmh-2027-${EVENT.startDate}@caele.mx`,
+    `DTSTAMP:${new Date().toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, '')}`,
+    `DTSTART;VALUE=DATE:${EVENT.startDate}`,
+    `DTEND;VALUE=DATE:${EVENT.endDate}`,
+    `SUMMARY:${escapeIcsText(EVENT.name)}`,
+    `LOCATION:${escapeIcsText(EVENT.location)}`,
+    `DESCRIPTION:${escapeIcsText(EVENT.description)}`,
     'END:VEVENT',
     'END:VCALENDAR',
-  ].join('\r\n');
-
-  const file = new Blob([calendar], { type: 'text/calendar;charset=utf-8' });
-  const url = URL.createObjectURL(file);
+  ];
+  const blob = new Blob([lines.join('\r\n')], { type: 'text/calendar;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
   const link = document.createElement('a');
   link.href = url;
   link.download = 'graduacion-enmh-2027.ics';
   document.body.append(link);
   link.click();
   link.remove();
-  window.setTimeout(() => URL.revokeObjectURL(url), 1000);
-  showToast('La fecha quedó lista para agregar a tu calendario.');
+  URL.revokeObjectURL(url);
+  showToast('Fecha guardada: 22 de mayo de 2027.');
 }
 
-let toastTimer;
 function showToast(message) {
-  const toast = document.querySelector('#toast');
-  if (!toast) return;
-
   window.clearTimeout(toastTimer);
   toast.textContent = message;
   toast.classList.add('is-visible');
-  toastTimer = window.setTimeout(() => toast.classList.remove('is-visible'), 3600);
+  toastTimer = window.setTimeout(() => toast.classList.remove('is-visible'), 2600);
 }
 
-function initializeCalendar() {
-  document.querySelectorAll('#addCalendar, [data-calendar]').forEach((button) => {
-    button.addEventListener('click', downloadCalendarEvent);
-  });
-}
-
-function initializeRsvpDialog() {
-  const dialog = document.querySelector('#rsvpDialog');
-  if (!dialog) return;
-
-  const closeButtons = dialog.querySelectorAll('.rsvp-dialog__close, .rsvp-dialog__accept');
-
-  const show = () => {
-    if (typeof dialog.showModal === 'function') dialog.showModal();
-    else dialog.setAttribute('open', '');
+async function share() {
+  const shareData = {
+    title: EVENT.name,
+    text: 'Sábado 22 de mayo de 2027 · Jardín Volterra, Zona Esmeralda.',
+    url: window.location.href.split('#')[0],
   };
 
-  const close = () => {
-    if (typeof dialog.close === 'function') dialog.close();
-    else dialog.removeAttribute('open');
-  };
+  if (navigator.share) {
+    try {
+      await navigator.share(shareData);
+      return;
+    } catch (error) {
+      if (error.name === 'AbortError') return;
+    }
+  }
 
-  document.querySelectorAll('[data-open-rsvp]').forEach((button) => {
-    button.addEventListener('click', show);
-  });
-  closeButtons.forEach((button) => button.addEventListener('click', close));
-  dialog.addEventListener('click', (event) => {
-    if (event.target === dialog) close();
-  });
+  try {
+    await navigator.clipboard.writeText(shareData.url);
+    showToast('Enlace copiado.');
+  } catch {
+    showToast('Copia la dirección de esta página para compartirla.');
+  }
 }
 
-function initializeHeroParallax() {
-  const hero = document.querySelector('.hero');
-  const art = document.querySelector('.hero__art');
-
-  if (!hero || !art || motionIsReduced.matches || !window.matchMedia('(pointer: fine)').matches) return;
-
-  let frame;
-  hero.addEventListener('pointermove', (event) => {
-    const rect = hero.getBoundingClientRect();
-    const x = (event.clientX - rect.left) / rect.width - 0.5;
-    const y = (event.clientY - rect.top) / rect.height - 0.5;
-    window.cancelAnimationFrame(frame);
-    frame = window.requestAnimationFrame(() => {
-      art.style.transform = `translate(${x * 10}px, ${y * 8}px)`;
-    });
-  });
+function openRsvpDialog() {
+  if (typeof rsvpDialog.showModal === 'function') {
+    rsvpDialog.showModal();
+  } else {
+    rsvpDialog.setAttribute('open', '');
+  }
 }
 
-initializeOpening();
-initializeRevealAnimations();
-initializeCountdown();
-initializeCalendar();
-initializeRsvpDialog();
-initializeHeroParallax();
+function closeRsvpDialog() {
+  rsvpDialog.close();
+}
+
+openSeal.addEventListener('click', openExperience);
+skipOpening.addEventListener('click', skipExperience);
+opening.addEventListener('keydown', trapOpeningFocus);
+opening.addEventListener('pointermove', moveEnvelope);
+opening.addEventListener('pointerleave', resetEnvelopePosition);
+addCalendar.addEventListener('click', downloadCalendarEvent);
+dialogCalendar.addEventListener('click', downloadCalendarEvent);
+shareInvitation.addEventListener('click', share);
+closeRsvp.addEventListener('click', closeRsvpDialog);
+document.querySelectorAll('[data-open-rsvp]').forEach((button) => {
+  button.addEventListener('click', openRsvpDialog);
+});
+
+rsvpDialog.addEventListener('click', (event) => {
+  if (event.target === rsvpDialog) closeRsvpDialog();
+});
+
+window.addEventListener('pageshow', () => {
+  if (location.hash) {
+    history.replaceState(null, '', location.pathname + location.search);
+  }
+  resetOpening();
+});
+
+resetOpening();
