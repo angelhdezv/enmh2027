@@ -245,11 +245,15 @@ rsvpDialog.addEventListener('click', (event) => {
   if (event.target === rsvpDialog) closeRsvpDialog();
 });
 
-window.addEventListener('pageshow', () => {
+window.addEventListener('pageshow', (event) => {
   if (location.hash) {
     history.replaceState(null, '', location.pathname + location.search);
   }
-  resetOpening();
+  if (event.persisted) {
+    resetOpening();
+  } else {
+    forceScrollTop();
+  }
 });
 
 resetOpening();
