@@ -4,7 +4,7 @@ Invitación digital para la Generación 2027 de **Médico Cirujano y Homeópata*
 
 ## Concepto
 
-La experiencia comienza con un sobre guinda y un sello negro. Al romper el sello, la tarjeta emerge y da paso a una sola superficie editorial: portada, programa y datos esenciales forman parte de la misma invitación, sin convertirse en una landing page convencional. La dirección visual usa la paleta institucional del IPN, Noto Sans para el sistema tipográfico y Cormorant Garamond como tipografía de ocasión.
+La experiencia comienza con un sobre guinda y un sello negro. Al romper el sello, la tarjeta emerge y da paso a una sola superficie editorial. La carrera es la protagonista de la portada; la generación, fecha y lugar quedan como datos secundarios. El resto de la información se organiza en tarjetas desplegables para conservar el carácter de invitación y evitar una landing page saturada.
 
 El bastón de Asclepio de una sola serpiente se usa como motivo médico. El emblema institucional se conserva como imagen, sin redibujarlo ni alterarlo.
 
@@ -26,22 +26,31 @@ Confirmados:
 - Jardín Volterra, Zona Esmeralda.
 - Duración total de nueve horas.
 - Recepción, ceremonia de generación, cena en cuatro tiempos, brindis, barra libre, DJ, entretenimiento en vivo, tornafiesta y fotografía panorámica.
+- Cada invitado debe llevar su boleto físico el día del evento.
 
 Pendientes antes de publicar como versión final:
 
 - Hora exacta y dirección completa.
 - Código de vestimenta.
-- Número de pases y fecha límite de confirmación.
-- Formulario, teléfono o WhatsApp de confirmación.
+
+La invitación es genérica y no incluye RSVP, formulario de confirmación ni datos personalizados de acceso.
 
 El calendario se descarga como evento de día completo para no inventar un horario. Su configuración vive al inicio de `script.js`, en el objeto `EVENT`.
+
+## Música
+
+El reproductor comienza al tocar el sello y se reinicia junto con la invitación al recargar. Coloca el archivo autorizado en:
+
+`assets/audio/cancion-evento.mp3`
+
+Mientras el archivo no exista, el reproductor se oculta sin bloquear la experiencia.
 
 ## Archivos
 
 - `index.html`: estructura y contenido.
 - `styles.css`: dirección de arte, animación y responsividad.
-- `script.js`: apertura, restauración de estado, calendario, compartir y modal informativo.
-- `assets/`: emblema ENMH y monograma del sitio.
+- `script.js`: apertura, restauración de estado, calendario, compartir, tarjetas y música.
+- `assets/`: emblema ENMH, monograma, ilustraciones SVG, branding y audio.
 
 ## Accesibilidad
 
