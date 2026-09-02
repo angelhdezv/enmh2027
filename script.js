@@ -1,29 +1,32 @@
 const EVENT = {
-  name: 'Graduación ENMH · Generación 2027',
+  name: 'Médico Cirujano y Homeópata · Generación 2027',
   startDate: '20270522',
   endDate: '20270523',
   location: 'Jardín Volterra, Zona Esmeralda, Estado de México',
-  description:
-    'Celebración de la Generación 2027 de Médico Cirujano y Homeópata, ENMH · IPN. Horario exacto por confirmar.',
+  description: 'Celebración de la Generación 2027 de Médico Cirujano y Homeópata, ENMH · IPN.',
 };
 
 const opening = document.querySelector('#opening');
 const invitation = document.querySelector('#invitacion');
+const skipToInvitation = document.querySelector('#skipToInvitation');
 const openSeal = document.querySelector('#openSeal');
 const skipOpening = document.querySelector('#skipOpening');
 const envelopeScene = document.querySelector('#envelopeScene');
 const letterPreview = document.querySelector('.letter-preview');
 const addCalendar = document.querySelector('#addCalendar');
-const dialogCalendar = document.querySelector('#dialogCalendar');
 const shareInvitation = document.querySelector('#shareInvitation');
-const rsvpDialog = document.querySelector('#rsvpDialog');
-const closeRsvp = document.querySelector('#closeRsvp');
+const infoCards = [...document.querySelectorAll('.info-card')];
+const musicPlayer = document.querySelector('#musicPlayer');
+const musicToggle = document.querySelector('#musicToggle');
+const eventAudio = document.querySelector('#eventAudio');
 const toast = document.querySelector('#toast');
 const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 
 let openingFallback;
 let leavingTimer;
 let toastTimer;
+let soundtrackRequested = false;
+let soundtrackUnavailable = false;
 
 if ('scrollRestoration' in history) {
   history.scrollRestoration = 'manual';
@@ -47,6 +50,59 @@ function setIntroActive(active) {
   invitation.inert = active;
 }
 
+function syncMusicPlayer() {
+  const isPaused = eventAudio.paused;
+  musicPlayer.classList.toggle('is-paused', isPaused);
+  musicToggle.setAttribute('aria-label', isPaused ? 'Reproducir música' : 'Pausar música');
+}
+
+function loadSoundtrack() {
+  if (eventAudio.getAttribute('src')) return;
+
+  const source = eventAudio.dataset.src;
+  if (!source) {
+    soundtrackUnavailable = true;
+    return;
+  }
+
+  eventAudio.src = source;
+}
+
+function requestSoundtrack() {
+  if (soundtrackRequested) return;
+
+  soundtrackRequested = true;
+  soundtrackUnavailable = false;
+  eventAudio.volume = 0.6;
+  loadSoundtrack();
+
+  if (soundtrackUnavailable) return;
+
+  const playRequest = eventAudio.play();
+  if (playRequest) {
+    playRequest.catch(() => {
+      if (eventAudio.error) {
+        soundtrackUnavailable = true;
+        musicPlayer.hidden = true;
+        return;
+      }
+
+      musicPlayer.hidden = false;
+      syncMusicPlayer();
+    });
+  }
+}
+
+function resetSoundtrack() {
+  soundtrackRequested = false;
+  soundtrackUnavailable = false;
+  eventAudio.pause();
+  eventAudio.removeAttribute('src');
+  eventAudio.load();
+  musicPlayer.hidden = true;
+  syncMusicPlayer();
+}
+
 function resetOpening() {
   window.clearTimeout(openingFallback);
   window.clearTimeout(leavingTimer);
@@ -55,6 +111,8 @@ function resetOpening() {
   opening.dataset.state = 'idle';
   openSeal.setAttribute('aria-expanded', 'false');
   envelopeScene.style.transform = '';
+  infoCards.forEach((card) => card.removeAttribute('open'));
+  resetSoundtrack();
   setIntroActive(true);
   forceScrollTop();
 }
@@ -72,16 +130,21 @@ function revealInvitation({ immediate = false } = {}) {
     forceScrollTop();
     invitation.focus({ preventScroll: true });
 
+    if (soundtrackRequested && !soundtrackUnavailable) {
+      musicPlayer.hidden = false;
+      syncMusicPlayer();
+    }
+
     leavingTimer = window.setTimeout(() => {
       opening.hidden = true;
       forceScrollTop();
-    }, immediate ? 0 : 760);
+    }, immediate ? 0 : 520);
   };
 
   if (immediate || reducedMotion.matches) {
     leave();
   } else {
-    leavingTimer = window.setTimeout(leave, 560);
+    leavingTimer = window.setTimeout(leave, 180);
   }
 }
 
@@ -92,6 +155,7 @@ function openExperience() {
   openSeal.setAttribute('aria-expanded', 'true');
   openSeal.blur();
   envelopeScene.style.transform = '';
+  requestSoundtrack();
 
   if (reducedMotion.matches) {
     opening.classList.add('is-opening');
@@ -102,6 +166,7 @@ function openExperience() {
   let letterFinished = false;
   const finishLetter = () => {
     if (letterFinished) return;
+
     letterFinished = true;
     window.clearTimeout(openingFallback);
     letterPreview.removeEventListener('transitionend', onLetterTransitionEnd);
@@ -115,20 +180,29 @@ function openExperience() {
   };
 
   letterPreview.addEventListener('transitionend', onLetterTransitionEnd);
-  openingFallback = window.setTimeout(finishLetter, 1900);
+  openingFallback = window.setTimeout(finishLetter, 1450);
   requestAnimationFrame(() => opening.classList.add('is-opening'));
 }
 
 function skipExperience() {
   if (opening.dataset.state === 'complete') return;
+
+  requestSoundtrack();
   opening.classList.add('is-opening');
   revealInvitation({ immediate: true });
+}
+
+function handleSkipLink(event) {
+  if (opening.hidden) return;
+
+  event.preventDefault();
+  skipExperience();
 }
 
 function trapOpeningFocus(event) {
   if (event.key !== 'Tab' || opening.hidden || opening.dataset.state !== 'idle') return;
 
-  const focusable = [skipOpening, openSeal];
+  const focusable = [skipToInvitation, skipOpening, openSeal];
   const currentIndex = focusable.indexOf(document.activeElement);
 
   if (event.shiftKey && currentIndex <= 0) {
@@ -216,39 +290,56 @@ async function share() {
   }
 }
 
-function openRsvpDialog() {
-  if (typeof rsvpDialog.showModal === 'function') {
-    rsvpDialog.showModal();
-  } else {
-    rsvpDialog.setAttribute('open', '');
+function toggleSoundtrack() {
+  if (eventAudio.paused) {
+    loadSoundtrack();
+    soundtrackRequested = true;
+    const playRequest = eventAudio.play();
+    if (playRequest) {
+      playRequest.catch(() => showToast('La canción todavía no está disponible.'));
+    }
+    return;
   }
+
+  eventAudio.pause();
 }
 
-function closeRsvpDialog() {
-  rsvpDialog.close();
+function handleCardToggle(event) {
+  const activeCard = event.currentTarget;
+  const actionLabel = activeCard.querySelector('.info-card__more > span:first-child');
+  if (actionLabel) {
+    actionLabel.textContent = activeCard.open ? 'Cerrar detalles' : 'Ver detalles';
+  }
+
+  if (!activeCard.open) return;
+
+  infoCards.forEach((card) => {
+    if (card !== activeCard) card.removeAttribute('open');
+  });
 }
 
 openSeal.addEventListener('click', openExperience);
 skipOpening.addEventListener('click', skipExperience);
+skipToInvitation.addEventListener('click', handleSkipLink);
 opening.addEventListener('keydown', trapOpeningFocus);
 opening.addEventListener('pointermove', moveEnvelope);
 opening.addEventListener('pointerleave', resetEnvelopePosition);
 addCalendar.addEventListener('click', downloadCalendarEvent);
-dialogCalendar.addEventListener('click', downloadCalendarEvent);
 shareInvitation.addEventListener('click', share);
-closeRsvp.addEventListener('click', closeRsvpDialog);
-document.querySelectorAll('[data-open-rsvp]').forEach((button) => {
-  button.addEventListener('click', openRsvpDialog);
+musicToggle.addEventListener('click', toggleSoundtrack);
+eventAudio.addEventListener('play', syncMusicPlayer);
+eventAudio.addEventListener('pause', syncMusicPlayer);
+eventAudio.addEventListener('error', () => {
+  soundtrackUnavailable = true;
+  musicPlayer.hidden = true;
 });
-
-rsvpDialog.addEventListener('click', (event) => {
-  if (event.target === rsvpDialog) closeRsvpDialog();
-});
+infoCards.forEach((card) => card.addEventListener('toggle', handleCardToggle));
 
 window.addEventListener('pageshow', (event) => {
   if (location.hash) {
     history.replaceState(null, '', location.pathname + location.search);
   }
+
   if (event.persisted) {
     resetOpening();
   } else {
