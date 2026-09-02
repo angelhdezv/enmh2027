@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 220">
+  <path d="M47 61h266v98c-13 0-23 10-23 23H70c0-13-10-23-23-23V61Z" fill="#451027"/>
+  <path d="M47 61c13 0 23-10 23-23h220c0 13 10 23 23 23" fill="#6f1d46"/>
+  <path d="M230 38v144" fill="none" stroke="#d7a4b9" stroke-width="2" stroke-dasharray="7 9" opacity=".7"/>
+  <g fill="none" stroke="#f8f3ec" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M121 74h48M108 92h74M108 132h74M121 150h48" stroke-width="2" opacity=".65"/>
+    <path d="M145 97v34" stroke-width="2"/>
+    <path d="M136 104c0-7 18-7 18 1 0 8-18 8-18 16 0 7 18 7 18 15" stroke-width="1.4"/>
+  </g>
+  <text x="271" y="99" fill="#f8f3ec" font-family="Georgia,serif" font-size="34" text-anchor="middle">22</text>
+  <text x="271" y="123" fill="#d7a4b9" font-family="Arial,sans-serif" font-size="10" font-weight="700" letter-spacing="3" text-anchor="middle">MAYO</text>
+  <text x="271" y="143" fill="#f8f3ec" font-family="Arial,sans-serif" font-size="8" font-weight="700" letter-spacing="2" text-anchor="middle">2027</text>
+  <circle cx="47" cy="61" r="5" fill="#8b2857"/>
+  <circle cx="313" cy="61" r="5" fill="#8b2857"/>
+</svg>
