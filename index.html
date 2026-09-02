@@ -8,13 +8,13 @@
       name="description"
       content="Invitación de la Generación 2027 de Médico Cirujano y Homeópata, ENMH · IPN. 22 de mayo de 2027, Jardín Volterra."
     >
-    <meta property="og:title" content="Generación 2027 · ENMH">
+    <meta property="og:title" content="Médico Cirujano y Homeópata · Generación 2027">
     <meta
       property="og:description"
       content="Celebremos el cierre de una historia y el inicio de todo lo que sigue."
     >
     <meta property="og:type" content="website">
-    <title>Generación 2027 · ENMH</title>
+    <title>Médico Cirujano y Homeópata · Generación 2027</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -23,7 +23,7 @@
       rel="stylesheet"
     >
     <link rel="icon" href="assets/monograma-enmh.svg" type="image/svg+xml">
-    <link rel="stylesheet" href="styles.css?v=0.0.2-brand-fix">
+    <link rel="stylesheet" href="styles.css?v=0.0.3">
     <script>
       document.documentElement.classList.add('js', 'intro-active');
       if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
@@ -32,11 +32,11 @@
       }
       window.scrollTo(0, 0);
     </script>
-    <script src="script.js?v=0.0.2" defer></script>
+    <script src="script.js?v=0.0.3" defer></script>
   </head>
 
   <body>
-    <a class="skip-link" href="#invitacion">Ir a la invitación</a>
+    <a class="skip-link" id="skipToInvitation" href="#invitacion">Ir a la invitación</a>
 
     <svg class="svg-sprite" aria-hidden="true">
       <symbol id="icon-asclepio" viewBox="0 0 64 96">
@@ -51,33 +51,17 @@
         <path d="M20 10c0 5.5-8 11-8 11S4 15.5 4 10a8 8 0 1 1 16 0Z"></path>
         <circle cx="12" cy="10" r="2.5"></circle>
       </symbol>
-      <symbol id="icon-arrow" viewBox="0 0 24 24">
-        <path d="M5 12h14M14 7l5 5-5 5"></path>
-      </symbol>
       <symbol id="icon-share" viewBox="0 0 24 24">
         <circle cx="18" cy="5" r="2.5"></circle>
         <circle cx="6" cy="12" r="2.5"></circle>
         <circle cx="18" cy="19" r="2.5"></circle>
         <path d="m8.2 10.8 7.6-4.5M8.2 13.2l7.6 4.5"></path>
       </symbol>
-      <symbol id="icon-close" viewBox="0 0 24 24">
-        <path d="m5 5 14 14M19 5 5 19"></path>
+      <symbol id="icon-play" viewBox="0 0 24 24">
+        <path d="m9 7 8 5-8 5V7Z"></path>
       </symbol>
-      <symbol id="icon-glass" viewBox="0 0 24 24">
-        <path d="M5 3h14l-1 6a6 6 0 0 1-12 0L5 3ZM12 15v6M8 21h8"></path>
-      </symbol>
-      <symbol id="icon-plate" viewBox="0 0 24 24">
-        <circle cx="12" cy="12" r="8.5"></circle>
-        <circle cx="12" cy="12" r="4.5"></circle>
-      </symbol>
-      <symbol id="icon-music" viewBox="0 0 24 24">
-        <path d="M9 18V6l10-2v12M9 9l10-2"></path>
-        <circle cx="6.5" cy="18" r="2.5"></circle>
-        <circle cx="16.5" cy="16" r="2.5"></circle>
-      </symbol>
-      <symbol id="icon-camera" viewBox="0 0 24 24">
-        <path d="M4 7h4l1.5-2h5L16 7h4v12H4V7Z"></path>
-        <circle cx="12" cy="13" r="3.5"></circle>
+      <symbol id="icon-pause" viewBox="0 0 24 24">
+        <path d="M9 7v10M15 7v10"></path>
       </symbol>
     </svg>
 
@@ -92,7 +76,7 @@
 
       <div class="opening__copy">
         <p class="eyebrow eyebrow--light">ENMH · IPN</p>
-        <h1 id="opening-title">Hay historias que merecen abrirse.</h1>
+        <p class="opening__title" id="opening-title">Hay historias que merecen abrirse.</p>
       </div>
 
       <div class="envelope-scene" id="envelopeScene">
@@ -152,23 +136,22 @@
           </button>
         </header>
 
-        <div class="paper__grid">
-          <section class="cover" aria-labelledby="generation-title">
-            <div class="cover__botanical cover__botanical--left" aria-hidden="true"></div>
-            <div class="cover__botanical cover__botanical--right" aria-hidden="true"></div>
-
+        <section class="cover" aria-labelledby="degree-title">
+          <div class="cover__content">
+            <img class="cover__crest" src="assets/enmh-escudo.jpg" alt="" width="72" height="91">
             <p class="eyebrow">Escuela Nacional de Medicina y Homeopatía</p>
-            <p class="cover__kicker">Generación</p>
-            <h1 id="generation-title">2027</h1>
-            <p class="cover__degree">Médico Cirujano y Homeópata</p>
+            <p class="cover__generation">Generación <strong>2027</strong></p>
+            <h1 id="degree-title">
+              Médico Cirujano
+              <em>y Homeópata</em>
+            </h1>
+            <p class="cover__occasion">Celebración de graduación</p>
 
             <div class="cover__ornament" aria-hidden="true">
               <span></span>
               <svg><use href="#icon-asclepio"></use></svg>
               <span></span>
             </div>
-
-            <p class="cover__statement">Juramos sanar.<br><em>Hoy celebramos.</em></p>
 
             <div class="event-date">
               <span>Sábado</span>
@@ -180,85 +163,161 @@
               <svg aria-hidden="true"><use href="#icon-pin"></use></svg>
               Jardín Volterra · Zona Esmeralda
             </p>
-            <p class="cover__pending">Horario exacto por confirmar</p>
 
             <div class="cover__actions">
-              <button class="button button--primary" type="button" data-open-rsvp>
-                Confirmar asistencia
-                <svg aria-hidden="true"><use href="#icon-arrow"></use></svg>
-              </button>
-              <button class="button button--text" id="addCalendar" type="button">
+              <button class="button button--primary" id="addCalendar" type="button">
                 <svg aria-hidden="true"><use href="#icon-calendar"></use></svg>
                 Guardar la fecha
               </button>
+              <a
+                class="button button--secondary"
+                href="https://www.google.com/maps/search/?api=1&amp;query=Jard%C3%ADn+Volterra+Zona+Esmeralda"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <svg aria-hidden="true"><use href="#icon-pin"></use></svg>
+                Ver ubicación
+              </a>
             </div>
 
             <p class="cover__motto">La técnica al servicio de la patria</p>
-          </section>
-
-          <section class="program" aria-labelledby="program-title">
-            <p class="eyebrow">El encuentro</p>
-            <h2 id="program-title">Una noche para recordar lo vivido.</h2>
-            <p class="program__intro">
-              Nueve horas para celebrar el final de una etapa. La secuencia y los horarios definitivos se
-              compartirán más adelante.
-            </p>
-
-            <ol class="timeline">
-              <li>
-                <span class="timeline__number">01</span>
-                <div><h3>Recepción y cóctel</h3><p>Bienvenida, fotografías y encuentro con la generación.</p></div>
-              </li>
-              <li>
-                <span class="timeline__number">02</span>
-                <div><h3>Ceremonia de generación</h3><p>Presentación, último pase de lista y ceremonia de batas.</p></div>
-              </li>
-              <li>
-                <span class="timeline__number">03</span>
-                <div><h3>Cena y brindis</h3><p>Cena en cuatro tiempos, anuario y brindis con champagne.</p></div>
-              </li>
-              <li>
-                <span class="timeline__number">04</span>
-                <div><h3>Celebración</h3><p>DJ, música en vivo y tornafiesta para cerrar la noche.</p></div>
-              </li>
-            </ol>
-
-            <blockquote>
-              “El cierre de una historia es también el comienzo de todo lo que sigue.”
-            </blockquote>
-          </section>
-        </div>
-
-        <section class="essentials" aria-label="Información del evento">
-          <div class="essential essential--included">
-            <p class="eyebrow">Tu boleto incluye</p>
-            <ul class="included-list">
-              <li><svg aria-hidden="true"><use href="#icon-plate"></use></svg><span>Cena en cuatro tiempos</span></li>
-              <li><svg aria-hidden="true"><use href="#icon-glass"></use></svg><span>Barra libre y tornafiesta</span></li>
-              <li><svg aria-hidden="true"><use href="#icon-music"></use></svg><span>DJ y entretenimiento en vivo</span></li>
-              <li><svg aria-hidden="true"><use href="#icon-camera"></use></svg><span>Fotografía panorámica</span></li>
-            </ul>
           </div>
 
-          <div class="essential">
-            <p class="eyebrow">El lugar</p>
-            <h2>Jardín Volterra</h2>
-            <p>Zona Esmeralda, Estado de México.<br>La dirección completa se compartirá próximamente.</p>
-            <a
-              class="text-link"
-              href="https://www.google.com/maps/search/?api=1&amp;query=Jard%C3%ADn+Volterra+Zona+Esmeralda"
-              target="_blank"
-              rel="noreferrer"
-            >Ver zona en Maps <svg aria-hidden="true"><use href="#icon-arrow"></use></svg></a>
-          </div>
+          <figure class="cover__art">
+            <img src="assets/illustrations/graduates.svg" alt="" width="720" height="620">
+            <figcaption>Juramos sanar. Hoy celebramos.</figcaption>
+          </figure>
+        </section>
 
-          <div class="essential essential--rsvp">
-            <p class="eyebrow">Asistencia</p>
-            <h2>Queremos celebrar contigo.</h2>
-            <p>El acceso personalizado, número de pases y fecha límite se enviarán cuando queden confirmados.</p>
-            <button class="button button--outline" type="button" data-open-rsvp>Ver información</button>
+        <section class="information" aria-labelledby="information-title">
+          <header class="section-heading">
+            <p class="eyebrow">Lo esencial</p>
+            <h2 id="information-title">La noche, en breve.</h2>
+            <p>Toca una tarjeta para ver más.</p>
+          </header>
+
+          <div class="information__grid">
+            <details class="info-card">
+              <summary>
+                <span class="info-card__visual" aria-hidden="true">
+                  <img
+                    src="assets/illustrations/schedule.svg"
+                    alt=""
+                    width="360"
+                    height="220"
+                    loading="lazy"
+                    decoding="async"
+                  >
+                </span>
+                <span class="info-card__heading">
+                  <span class="eyebrow">La celebración</span>
+                  <span class="info-card__title" role="heading" aria-level="3">Una noche para recordar</span>
+                  <span class="info-card__teaser">Recepción, ceremonia, cena y música.</span>
+                </span>
+                <span class="info-card__more">
+                  <span>Ver detalles</span>
+                  <span class="info-card__plus" aria-hidden="true"></span>
+                </span>
+              </summary>
+              <div class="info-card__content">
+                <ol class="event-list">
+                  <li>
+                    <span>01</span>
+                    <div><strong>Recepción y cóctel</strong><p>Bienvenida y fotografías con la generación.</p></div>
+                  </li>
+                  <li>
+                    <span>02</span>
+                    <div><strong>Ceremonia de generación</strong><p>Último pase de lista y ceremonia de batas.</p></div>
+                  </li>
+                  <li>
+                    <span>03</span>
+                    <div><strong>Cena y brindis</strong><p>Cena en cuatro tiempos y brindis con champagne.</p></div>
+                  </li>
+                  <li>
+                    <span>04</span>
+                    <div><strong>Celebración</strong><p>DJ, música en vivo y tornafiesta.</p></div>
+                  </li>
+                </ol>
+              </div>
+            </details>
+
+            <details class="info-card">
+              <summary>
+                <span class="info-card__visual" aria-hidden="true">
+                  <img
+                    src="assets/illustrations/ticket.svg"
+                    alt=""
+                    width="360"
+                    height="220"
+                    loading="lazy"
+                    decoding="async"
+                  >
+                </span>
+                <span class="info-card__heading">
+                  <span class="eyebrow">Tu boleto</span>
+                  <span class="info-card__title" role="heading" aria-level="3">Todo está incluido</span>
+                  <span class="info-card__teaser">Cena, barra y entretenimiento.</span>
+                </span>
+                <span class="info-card__more">
+                  <span>Ver detalles</span>
+                  <span class="info-card__plus" aria-hidden="true"></span>
+                </span>
+              </summary>
+              <div class="info-card__content">
+                <ul class="included-list">
+                  <li>Cena en cuatro tiempos</li>
+                  <li>Barra libre y tornafiesta</li>
+                  <li>DJ y entretenimiento en vivo</li>
+                  <li>Fotografía panorámica</li>
+                </ul>
+              </div>
+            </details>
+
+            <details class="info-card">
+              <summary>
+                <span class="info-card__visual" aria-hidden="true">
+                  <img
+                    src="assets/illustrations/venue.svg"
+                    alt=""
+                    width="360"
+                    height="220"
+                    loading="lazy"
+                    decoding="async"
+                  >
+                </span>
+                <span class="info-card__heading">
+                  <span class="eyebrow">El lugar</span>
+                  <span class="info-card__title" role="heading" aria-level="3">Jardín Volterra</span>
+                  <span class="info-card__teaser">Zona Esmeralda, Estado de México.</span>
+                </span>
+                <span class="info-card__more">
+                  <span>Ver detalles</span>
+                  <span class="info-card__plus" aria-hidden="true"></span>
+                </span>
+              </summary>
+              <div class="info-card__content">
+                <p>
+                  La celebración será en Jardín Volterra, en Zona Esmeralda. Usa el botón de ubicación de la
+                  invitación para consultar la zona en Maps.
+                </p>
+              </div>
+            </details>
           </div>
         </section>
+
+        <aside class="ticket-reminder" aria-labelledby="ticket-reminder-title">
+          <div class="ticket-reminder__icon" aria-hidden="true">
+            <span></span>
+            <strong>22</strong>
+            <small>MAY</small>
+          </div>
+          <div>
+            <p class="eyebrow">Importante</p>
+            <h2 id="ticket-reminder-title">No olvides tu boleto físico.</h2>
+            <p>Tráelo contigo el día del evento.</p>
+          </div>
+          <svg class="ticket-reminder__mark" aria-hidden="true"><use href="#icon-asclepio"></use></svg>
+        </aside>
 
         <footer class="paper__footer">
           <span>ENMH · IPN · MMXXVII</span>
@@ -279,19 +338,26 @@
       </article>
     </main>
 
-    <dialog class="rsvp-dialog" id="rsvpDialog" aria-labelledby="rsvp-title">
-      <button class="dialog-close" id="closeRsvp" type="button" aria-label="Cerrar">
-        <svg aria-hidden="true"><use href="#icon-close"></use></svg>
+    <aside class="music-player" id="musicPlayer" aria-label="Reproductor de música" hidden>
+      <button class="music-player__toggle" id="musicToggle" type="button" aria-label="Pausar música">
+        <svg class="music-player__play" aria-hidden="true"><use href="#icon-play"></use></svg>
+        <svg class="music-player__pause" aria-hidden="true"><use href="#icon-pause"></use></svg>
       </button>
-      <p class="eyebrow">Confirmación</p>
-      <h2 id="rsvp-title">Los últimos detalles están por llegar.</h2>
-      <p>
-        El horario exacto, número de pases, código de vestimenta y medio de confirmación se publicarán en
-        cuanto la generación los confirme.
-      </p>
-      <p class="dialog-note">Por ahora, guarda el sábado 22 de mayo de 2027.</p>
-      <button class="button button--primary" id="dialogCalendar" type="button">Guardar la fecha</button>
-    </dialog>
+      <span class="music-player__copy">
+        <small>Música</small>
+        <strong>Canción de la generación</strong>
+      </span>
+      <span class="music-player__equalizer" aria-hidden="true">
+        <i></i><i></i><i></i>
+      </span>
+    </aside>
+
+    <audio
+      id="eventAudio"
+      data-src="assets/audio/cancion-evento.mp3"
+      preload="none"
+      loop
+    ></audio>
 
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
   </body>
