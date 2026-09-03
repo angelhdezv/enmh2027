@@ -27,7 +27,7 @@ Confirmados:
 - Duración total de nueve horas.
 - Recepción, ceremonia de generación, cena en cuatro tiempos, brindis, barra libre, DJ, entretenimiento en vivo, tornafiesta y fotografía panorámica.
 - Cada invitado debe llevar su boleto físico el día del evento.
-- Código de vestimenta provisional: formal · etiqueta.
+- Código de vestimenta provisional: formal · etiqueta, con una guía desplegable inspirada temporalmente en el demo de La Salle.
 
 Pendientes antes de publicar como versión final:
 
@@ -52,7 +52,7 @@ Mientras el archivo no exista, el reproductor permanece visible y muestra “Pr�
 - `index.html`: estructura y contenido.
 - `styles.css`: dirección de arte, animación y responsividad.
 - `script.js`: apertura, restauración de estado, calendario, compartir, cuenta regresiva y música.
-- `assets/`: emblema ENMH, monograma, branding, ilustraciones SVG y audio.
+- `assets/`: emblema ENMH, monograma, branding, ilustraciones SVG y PNG, y audio.
 
 ## Accesibilidad
 

@@ -23,6 +23,8 @@ const musicStatus = document.querySelector('#musicStatus');
 const eventAudio = document.querySelector('#eventAudio');
 const countdown = document.querySelector('#countdown');
 const countdownStatus = document.querySelector('#countdownStatus');
+const openDressDetails = document.querySelector('#openDressDetails');
+const dressDetailsDialog = document.querySelector('#dressDetailsDialog');
 const countdownUnits = {
   days: document.querySelector('[data-countdown-days]'),
   hours: document.querySelector('[data-countdown-hours]'),
@@ -121,6 +123,7 @@ function resetOpening() {
   opening.dataset.state = 'idle';
   openSeal.setAttribute('aria-expanded', 'false');
   envelopeScene.style.transform = '';
+  if (dressDetailsDialog.open) dressDetailsDialog.close();
   resetSoundtrack();
   setIntroActive(true);
   forceScrollTop();
@@ -328,6 +331,32 @@ function updateCountdown() {
   }
 }
 
+function openDressCodeDetails() {
+  if (typeof dressDetailsDialog.showModal === 'function') {
+    dressDetailsDialog.showModal();
+  } else {
+    dressDetailsDialog.setAttribute('open', '');
+  }
+  document.documentElement.classList.add('dialog-active');
+}
+
+function closeDressCodeDetails() {
+  document.documentElement.classList.remove('dialog-active');
+}
+
+function closeDressCodeFromBackdrop(event) {
+  if (event.target !== dressDetailsDialog) return;
+
+  const bounds = dressDetailsDialog.getBoundingClientRect();
+  const isInside =
+    event.clientX >= bounds.left &&
+    event.clientX <= bounds.right &&
+    event.clientY >= bounds.top &&
+    event.clientY <= bounds.bottom;
+
+  if (!isInside) dressDetailsDialog.close();
+}
+
 openSeal.addEventListener('click', openExperience);
 skipOpening.addEventListener('click', skipExperience);
 skipToInvitation.addEventListener('click', handleSkipLink);
@@ -337,6 +366,9 @@ opening.addEventListener('pointerleave', resetEnvelopePosition);
 addCalendar.addEventListener('click', downloadCalendarEvent);
 shareInvitation.addEventListener('click', share);
 musicToggle.addEventListener('click', toggleSoundtrack);
+openDressDetails.addEventListener('click', openDressCodeDetails);
+dressDetailsDialog.addEventListener('close', closeDressCodeDetails);
+dressDetailsDialog.addEventListener('click', closeDressCodeFromBackdrop);
 eventAudio.addEventListener('play', syncMusicPlayer);
 eventAudio.addEventListener('pause', syncMusicPlayer);
 eventAudio.addEventListener('error', () => {

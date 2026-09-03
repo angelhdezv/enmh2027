@@ -23,7 +23,7 @@
       rel="stylesheet"
     >
     <link rel="icon" href="assets/monograma-enmh.svg" type="image/svg+xml">
-    <link rel="stylesheet" href="styles.css?v=0.0.3.2">
+    <link rel="stylesheet" href="styles.css?v=0.0.3.3">
     <script>
       document.documentElement.classList.add('js', 'intro-active');
       if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
@@ -32,7 +32,7 @@
       }
       window.scrollTo(0, 0);
     </script>
-    <script src="script.js?v=0.0.3.2" defer></script>
+    <script src="script.js?v=0.0.3.3" defer></script>
   </head>
 
   <body>
@@ -62,6 +62,9 @@
       </symbol>
       <symbol id="icon-pause" viewBox="0 0 24 24">
         <path d="M9 7v10M15 7v10"></path>
+      </symbol>
+      <symbol id="icon-close" viewBox="0 0 24 24">
+        <path d="m6 6 12 12M18 6 6 18"></path>
       </symbol>
     </svg>
 
@@ -262,9 +265,30 @@
 
         <section class="closing-details" aria-label="Vestimenta y acceso">
           <section class="dress-code" aria-labelledby="dress-code-title">
-            <div class="dress-code__ornament" aria-hidden="true"><span></span><i></i><span></span></div>
-            <p class="eyebrow">Código de vestimenta</p>
-            <h2 id="dress-code-title">Formal <em>· Etiqueta</em></h2>
+            <div class="dress-code__copy">
+              <div class="dress-code__ornament" aria-hidden="true"><span></span><i></i><span></span></div>
+              <p class="eyebrow">Código de vestimenta</p>
+              <h2 id="dress-code-title">Formal <em>· Etiqueta</em></h2>
+              <button
+                class="button button--outline dress-code__button"
+                id="openDressDetails"
+                type="button"
+                aria-haspopup="dialog"
+                aria-controls="dressDetailsDialog"
+              >
+                Más información
+              </button>
+            </div>
+
+            <img
+              class="dress-code__illustration"
+              src="assets/illustrations/dress-code-atelier.png"
+              alt="Ilustración de referencia de vestido largo y traje formal"
+              width="1536"
+              height="1024"
+              loading="lazy"
+              decoding="async"
+            >
           </section>
 
           <aside class="ticket-reminder" aria-labelledby="ticket-title">
@@ -297,6 +321,44 @@
     </main>
 
     <audio id="eventAudio" data-src="assets/audio/cancion-evento.mp3" preload="none" loop></audio>
+
+    <dialog class="dress-dialog" id="dressDetailsDialog" aria-labelledby="dress-dialog-title">
+      <div class="dress-dialog__paper">
+        <form method="dialog">
+          <button class="dress-dialog__close" type="submit" aria-label="Cerrar indicaciones de vestimenta">
+            <svg aria-hidden="true"><use href="#icon-close"></use></svg>
+          </button>
+        </form>
+
+        <p class="eyebrow">Indicaciones preliminares</p>
+        <h2 id="dress-dialog-title">Formal <em>· Etiqueta</em></h2>
+        <p class="dress-dialog__intro">Una guía breve para conservar el carácter formal de la celebración.</p>
+
+        <div class="dress-dialog__guides">
+          <section>
+            <h3>Ellas</h3>
+            <ul>
+              <li>Vestido largo o midi</li>
+              <li>Tacón cómodo</li>
+              <li>Joyería discreta</li>
+            </ul>
+          </section>
+          <section>
+            <h3>Ellos</h3>
+            <ul>
+              <li>Traje oscuro</li>
+              <li>Camisa blanca</li>
+              <li>Corbata opcional</li>
+            </ul>
+          </section>
+        </div>
+
+        <div class="dress-dialog__notes">
+          <p><strong>Graduados</strong> Toga y birrete durante la ceremonia.</p>
+          <p><strong>Evita</strong> Blanco total y tonos neón.</p>
+        </div>
+      </div>
+    </dialog>
 
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
   </body>
