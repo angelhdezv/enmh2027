@@ -4,7 +4,7 @@ Invitación digital para la Generación 2027 de **Médico Cirujano y Homeópata*
 
 ## Concepto
 
-La experiencia comienza con un sobre guinda y un sello negro. Al romper el sello, la tarjeta emerge y da paso a una sola superficie editorial: portada, itinerario, cuenta regresiva y recordatorio de acceso forman parte de la misma invitación, sin convertirse en una landing page convencional. La dirección visual conserva el minimalismo de `v0.0.2` y añade ilustraciones SVG transparentes como acentos laterales e inferiores.
+La experiencia comienza con un sobre guinda y un sello negro. Al romper el sello, la tarjeta emerge y da paso a una sola superficie editorial: portada, cuenta regresiva, itinerario, código de vestimenta y recordatorio de acceso forman parte de la misma invitación, sin convertirse en una landing page convencional. La dirección visual conserva el minimalismo de `v0.0.2` y añade ilustraciones SVG transparentes como acentos laterales e inferiores.
 
 El bastón de Asclepio de una sola serpiente se usa como motivo médico. El emblema institucional se conserva como imagen, sin redibujarlo ni alterarlo.
 
@@ -27,11 +27,11 @@ Confirmados:
 - Duración total de nueve horas.
 - Recepción, ceremonia de generación, cena en cuatro tiempos, brindis, barra libre, DJ, entretenimiento en vivo, tornafiesta y fotografía panorámica.
 - Cada invitado debe llevar su boleto físico el día del evento.
+- Código de vestimenta provisional: formal · etiqueta.
 
 Pendientes antes de publicar como versión final:
 
 - Hora exacta y dirección completa.
-- Código de vestimenta.
 
 El itinerario visible se tomó temporalmente del demo de La Salle para reservar el espacio de diseño y está marcado como preliminar. Debe sustituirse cuando el cliente confirme el programa real.
 

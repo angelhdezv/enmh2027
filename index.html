@@ -205,6 +205,21 @@
             <p class="cover__motto">La técnica al servicio de la patria</p>
           </section>
 
+          <section class="countdown-panel" aria-labelledby="countdown-title">
+            <div class="countdown-panel__heading">
+              <p class="eyebrow">La espera también es parte de la historia</p>
+              <h2 id="countdown-title">Falta cada vez menos.</h2>
+            </div>
+
+            <div class="countdown" id="countdown" role="timer" aria-live="off">
+              <span><strong data-countdown-days>000</strong><small>Días</small></span>
+              <span><strong data-countdown-hours>00</strong><small>Horas</small></span>
+              <span><strong data-countdown-minutes>00</strong><small>Minutos</small></span>
+              <span><strong data-countdown-seconds>00</strong><small>Segundos</small></span>
+            </div>
+            <p class="sr-only" id="countdownStatus" aria-live="polite"></p>
+          </section>
+
           <section class="program" aria-labelledby="program-title">
             <p class="eyebrow">Programa preliminar</p>
             <h2 id="program-title">Itinerario</h2>
@@ -245,21 +260,12 @@
           </section>
         </div>
 
-        <section class="closing-details" aria-label="Cuenta regresiva y acceso">
-          <div class="countdown-panel">
-            <div class="countdown-panel__heading">
-              <p class="eyebrow">La espera también es parte de la historia</p>
-              <h2>Falta cada vez menos.</h2>
-            </div>
-
-            <div class="countdown" id="countdown" role="timer" aria-live="off">
-              <span><strong data-countdown-days>000</strong><small>Días</small></span>
-              <span><strong data-countdown-hours>00</strong><small>Horas</small></span>
-              <span><strong data-countdown-minutes>00</strong><small>Minutos</small></span>
-              <span><strong data-countdown-seconds>00</strong><small>Segundos</small></span>
-            </div>
-            <p class="sr-only" id="countdownStatus" aria-live="polite"></p>
-          </div>
+        <section class="closing-details" aria-label="Vestimenta y acceso">
+          <section class="dress-code" aria-labelledby="dress-code-title">
+            <div class="dress-code__ornament" aria-hidden="true"><span></span><i></i><span></span></div>
+            <p class="eyebrow">Código de vestimenta</p>
+            <h2 id="dress-code-title">Formal <em>· Etiqueta</em></h2>
+          </section>
 
           <aside class="ticket-reminder" aria-labelledby="ticket-title">
             <img src="assets/illustrations/ticket.svg" alt="" width="360" height="220" loading="lazy">
