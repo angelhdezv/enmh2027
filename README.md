@@ -4,7 +4,7 @@ Invitación digital para la Generación 2027 de **Médico Cirujano y Homeópata*
 
 ## Concepto
 
-La experiencia comienza con un sobre guinda y un sello negro. Al romper el sello, la tarjeta emerge y da paso a una sola superficie editorial. La carrera es la protagonista de la portada; la generación, fecha y lugar quedan como datos secundarios. Una composición ilustrada acompaña la portada y las tarjetas informativas sólo aparecen cuando el invitado solicita ver los detalles.
+La experiencia comienza con un sobre guinda y un sello negro. Al romper el sello, la tarjeta emerge y da paso a una sola superficie editorial: portada, itinerario, cuenta regresiva y recordatorio de acceso forman parte de la misma invitación, sin convertirse en una landing page convencional. La dirección visual conserva el minimalismo de `v0.0.2` y añade ilustraciones SVG transparentes como acentos laterales e inferiores.
 
 El bastón de Asclepio de una sola serpiente se usa como motivo médico. El emblema institucional se conserva como imagen, sin redibujarlo ni alterarlo.
 
@@ -33,24 +33,26 @@ Pendientes antes de publicar como versión final:
 - Hora exacta y dirección completa.
 - Código de vestimenta.
 
-La invitación es genérica y no incluye RSVP, formulario de confirmación ni datos personalizados de acceso.
+El itinerario visible se tomó temporalmente del demo de La Salle para reservar el espacio de diseño y está marcado como preliminar. Debe sustituirse cuando el cliente confirme el programa real.
+
+Esta invitación es genérica y no incluye RSVP ni formulario de confirmación.
 
 El calendario se descarga como evento de día completo para no inventar un horario. Su configuración vive al inicio de `script.js`, en el objeto `EVENT`.
 
 ## Música
 
-El reproductor comienza al tocar el sello y se reinicia junto con la invitación al recargar. Coloca el archivo autorizado en:
+El reproductor está integrado en la parte superior de la invitación. Comienza al tocar el sello y se reinicia al recargar. Coloca el archivo autorizado en:
 
 `assets/audio/cancion-evento.mp3`
 
-Mientras el archivo no exista, el reproductor permanece visible como parte del diseño y avisa que la canción todavía no está disponible, sin bloquear la experiencia.
+Mientras el archivo no exista, el reproductor permanece visible y muestra “Próximamente”.
 
 ## Archivos
 
 - `index.html`: estructura y contenido.
 - `styles.css`: dirección de arte, animación y responsividad.
-- `script.js`: apertura, restauración de estado, calendario, compartir, detalles y música.
-- `assets/`: emblema ENMH, monograma, ilustraciones SVG, branding y audio.
+- `script.js`: apertura, restauración de estado, calendario, compartir, cuenta regresiva y música.
+- `assets/`: emblema ENMH, monograma, branding, ilustraciones SVG y audio.
 
 ## Accesibilidad
 

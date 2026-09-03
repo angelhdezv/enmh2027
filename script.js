@@ -6,6 +6,8 @@ const EVENT = {
   description: 'Celebración de la Generación 2027 de Médico Cirujano y Homeópata, ENMH · IPN.',
 };
 
+const EVENT_START = Date.UTC(2027, 4, 22, 6, 0, 0);
+
 const opening = document.querySelector('#opening');
 const invitation = document.querySelector('#invitacion');
 const skipToInvitation = document.querySelector('#skipToInvitation');
@@ -15,13 +17,18 @@ const envelopeScene = document.querySelector('#envelopeScene');
 const letterPreview = document.querySelector('.letter-preview');
 const addCalendar = document.querySelector('#addCalendar');
 const shareInvitation = document.querySelector('#shareInvitation');
-const toggleDetails = document.querySelector('#toggleDetails');
-const eventDetails = document.querySelector('#eventDetails');
-const infoCards = [...document.querySelectorAll('.info-card')];
 const musicPlayer = document.querySelector('#musicPlayer');
 const musicToggle = document.querySelector('#musicToggle');
 const musicStatus = document.querySelector('#musicStatus');
 const eventAudio = document.querySelector('#eventAudio');
+const countdown = document.querySelector('#countdown');
+const countdownStatus = document.querySelector('#countdownStatus');
+const countdownUnits = {
+  days: document.querySelector('[data-countdown-days]'),
+  hours: document.querySelector('[data-countdown-hours]'),
+  minutes: document.querySelector('[data-countdown-minutes]'),
+  seconds: document.querySelector('[data-countdown-seconds]'),
+};
 const toast = document.querySelector('#toast');
 const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 
@@ -71,6 +78,7 @@ function loadSoundtrack() {
   const source = eventAudio.dataset.src;
   if (!source) {
     soundtrackUnavailable = true;
+    syncMusicPlayer();
     return;
   }
 
@@ -90,12 +98,7 @@ function requestSoundtrack() {
   const playRequest = eventAudio.play();
   if (playRequest) {
     playRequest.catch(() => {
-      if (eventAudio.error) {
-        soundtrackUnavailable = true;
-        syncMusicPlayer();
-        return;
-      }
-
+      if (eventAudio.error) soundtrackUnavailable = true;
       syncMusicPlayer();
     });
   }
@@ -110,21 +113,6 @@ function resetSoundtrack() {
   syncMusicPlayer();
 }
 
-function setDetailsVisible(visible, { scroll = false } = {}) {
-  eventDetails.hidden = !visible;
-  toggleDetails.setAttribute('aria-expanded', String(visible));
-  toggleDetails.textContent = visible ? 'Ocultar detalles' : 'Ver detalles del evento';
-
-  if (visible && scroll) {
-    requestAnimationFrame(() => {
-      eventDetails.scrollIntoView({
-        behavior: reducedMotion.matches ? 'auto' : 'smooth',
-        block: 'start',
-      });
-    });
-  }
-}
-
 function resetOpening() {
   window.clearTimeout(openingFallback);
   window.clearTimeout(leavingTimer);
@@ -133,8 +121,6 @@ function resetOpening() {
   opening.dataset.state = 'idle';
   openSeal.setAttribute('aria-expanded', 'false');
   envelopeScene.style.transform = '';
-  infoCards.forEach((card) => card.removeAttribute('open'));
-  setDetailsVisible(false);
   resetSoundtrack();
   setIntroActive(true);
   forceScrollTop();
@@ -153,18 +139,16 @@ function revealInvitation({ immediate = false } = {}) {
     forceScrollTop();
     invitation.focus({ preventScroll: true });
 
-    syncMusicPlayer();
-
     leavingTimer = window.setTimeout(() => {
       opening.hidden = true;
       forceScrollTop();
-    }, immediate ? 0 : 520);
+    }, immediate ? 0 : 760);
   };
 
   if (immediate || reducedMotion.matches) {
     leave();
   } else {
-    leavingTimer = window.setTimeout(leave, 180);
+    leavingTimer = window.setTimeout(leave, 560);
   }
 }
 
@@ -186,7 +170,6 @@ function openExperience() {
   let letterFinished = false;
   const finishLetter = () => {
     if (letterFinished) return;
-
     letterFinished = true;
     window.clearTimeout(openingFallback);
     letterPreview.removeEventListener('transitionend', onLetterTransitionEnd);
@@ -200,23 +183,15 @@ function openExperience() {
   };
 
   letterPreview.addEventListener('transitionend', onLetterTransitionEnd);
-  openingFallback = window.setTimeout(finishLetter, 1450);
+  openingFallback = window.setTimeout(finishLetter, 1900);
   requestAnimationFrame(() => opening.classList.add('is-opening'));
 }
 
 function skipExperience() {
   if (opening.dataset.state === 'complete') return;
-
   requestSoundtrack();
   opening.classList.add('is-opening');
   revealInvitation({ immediate: true });
-}
-
-function handleSkipLink(event) {
-  if (opening.hidden) return;
-
-  event.preventDefault();
-  skipExperience();
 }
 
 function trapOpeningFocus(event) {
@@ -232,6 +207,13 @@ function trapOpeningFocus(event) {
     event.preventDefault();
     focusable[0].focus();
   }
+}
+
+function handleSkipLink(event) {
+  if (opening.hidden) return;
+
+  event.preventDefault();
+  skipExperience();
 }
 
 function moveEnvelope(event) {
@@ -317,35 +299,33 @@ function toggleSoundtrack() {
   }
 
   if (eventAudio.paused) {
-    loadSoundtrack();
     soundtrackRequested = true;
+    loadSoundtrack();
     const playRequest = eventAudio.play();
-    if (playRequest) {
-      playRequest.catch(() => showToast('La canción todavía no está disponible.'));
-    }
+    if (playRequest) playRequest.catch(() => showToast('La canción todavía no está disponible.'));
     return;
   }
 
   eventAudio.pause();
 }
 
-function handleCardToggle(event) {
-  const activeCard = event.currentTarget;
-  const actionLabel = activeCard.querySelector('.info-card__more > span:first-child');
-  if (actionLabel) {
-    actionLabel.textContent = activeCard.open ? 'Cerrar detalles' : 'Ver detalles';
+function updateCountdown() {
+  const remaining = Math.max(0, EVENT_START - Date.now());
+  const totalSeconds = Math.floor(remaining / 1000);
+  const days = Math.floor(totalSeconds / 86400);
+  const hours = Math.floor((totalSeconds % 86400) / 3600);
+  const minutes = Math.floor((totalSeconds % 3600) / 60);
+  const seconds = totalSeconds % 60;
+
+  countdownUnits.days.textContent = String(days).padStart(3, '0');
+  countdownUnits.hours.textContent = String(hours).padStart(2, '0');
+  countdownUnits.minutes.textContent = String(minutes).padStart(2, '0');
+  countdownUnits.seconds.textContent = String(seconds).padStart(2, '0');
+
+  if (remaining === 0) {
+    countdown.classList.add('is-complete');
+    countdownStatus.textContent = 'Hoy celebramos la graduación.';
   }
-
-  if (!activeCard.open) return;
-
-  infoCards.forEach((card) => {
-    if (card !== activeCard) card.removeAttribute('open');
-  });
-}
-
-function handleDetailsToggle() {
-  const shouldShow = eventDetails.hidden;
-  setDetailsVisible(shouldShow, { scroll: shouldShow });
 }
 
 openSeal.addEventListener('click', openExperience);
@@ -356,7 +336,6 @@ opening.addEventListener('pointermove', moveEnvelope);
 opening.addEventListener('pointerleave', resetEnvelopePosition);
 addCalendar.addEventListener('click', downloadCalendarEvent);
 shareInvitation.addEventListener('click', share);
-toggleDetails.addEventListener('click', handleDetailsToggle);
 musicToggle.addEventListener('click', toggleSoundtrack);
 eventAudio.addEventListener('play', syncMusicPlayer);
 eventAudio.addEventListener('pause', syncMusicPlayer);
@@ -364,13 +343,11 @@ eventAudio.addEventListener('error', () => {
   soundtrackUnavailable = true;
   syncMusicPlayer();
 });
-infoCards.forEach((card) => card.addEventListener('toggle', handleCardToggle));
 
 window.addEventListener('pageshow', (event) => {
   if (location.hash) {
     history.replaceState(null, '', location.pathname + location.search);
   }
-
   if (event.persisted) {
     resetOpening();
   } else {
@@ -378,4 +355,6 @@ window.addEventListener('pageshow', (event) => {
   }
 });
 
+updateCountdown();
+window.setInterval(updateCountdown, 1000);
 resetOpening();
