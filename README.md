@@ -4,7 +4,7 @@ Invitación digital para la Generación 2027 de **Médico Cirujano y Homeópata*
 
 ## Concepto
 
-La experiencia comienza con un sobre guinda y un sello negro. Al romper el sello, la tarjeta emerge y da paso a una sola superficie editorial. La carrera es la protagonista de la portada; la generación, fecha y lugar quedan como datos secundarios. El resto de la información se organiza en tarjetas desplegables para conservar el carácter de invitación y evitar una landing page saturada.
+La experiencia comienza con un sobre guinda y un sello negro. Al romper el sello, la tarjeta emerge y da paso a una sola superficie editorial. La carrera es la protagonista de la portada; la generación, fecha y lugar quedan como datos secundarios. Una composición ilustrada acompaña la portada y las tarjetas informativas sólo aparecen cuando el invitado solicita ver los detalles.
 
 El bastón de Asclepio de una sola serpiente se usa como motivo médico. El emblema institucional se conserva como imagen, sin redibujarlo ni alterarlo.
 
@@ -43,13 +43,13 @@ El reproductor comienza al tocar el sello y se reinicia junto con la invitación
 
 `assets/audio/cancion-evento.mp3`
 
-Mientras el archivo no exista, el reproductor se oculta sin bloquear la experiencia.
+Mientras el archivo no exista, el reproductor permanece visible como parte del diseño y avisa que la canción todavía no está disponible, sin bloquear la experiencia.
 
 ## Archivos
 
 - `index.html`: estructura y contenido.
 - `styles.css`: dirección de arte, animación y responsividad.
-- `script.js`: apertura, restauración de estado, calendario, compartir, tarjetas y música.
+- `script.js`: apertura, restauración de estado, calendario, compartir, detalles y música.
 - `assets/`: emblema ENMH, monograma, ilustraciones SVG, branding y audio.
 
 ## Accesibilidad

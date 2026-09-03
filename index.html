@@ -23,7 +23,7 @@
       rel="stylesheet"
     >
     <link rel="icon" href="assets/monograma-enmh.svg" type="image/svg+xml">
-    <link rel="stylesheet" href="styles.css?v=0.0.3">
+    <link rel="stylesheet" href="styles.css?v=0.0.3.1">
     <script>
       document.documentElement.classList.add('js', 'intro-active');
       if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
@@ -32,7 +32,7 @@
       }
       window.scrollTo(0, 0);
     </script>
-    <script src="script.js?v=0.0.3" defer></script>
+    <script src="script.js?v=0.0.3.1" defer></script>
   </head>
 
   <body>
@@ -140,12 +140,11 @@
           <div class="cover__content">
             <img class="cover__crest" src="assets/enmh-escudo.jpg" alt="" width="72" height="91">
             <p class="eyebrow">Escuela Nacional de Medicina y Homeopatía</p>
-            <p class="cover__generation">Generación <strong>2027</strong></p>
             <h1 id="degree-title">
               Médico Cirujano
               <em>y Homeópata</em>
             </h1>
-            <p class="cover__occasion">Celebración de graduación</p>
+            <p class="cover__generation">Generación <strong>2027</strong></p>
 
             <div class="cover__ornament" aria-hidden="true">
               <span></span>
@@ -184,16 +183,29 @@
           </div>
 
           <figure class="cover__art">
+            <figcaption>
+              <span class="eyebrow">Celebración de graduación</span>
+              <strong>Juramos sanar.</strong>
+              <em>Hoy celebramos.</em>
+            </figcaption>
             <img src="assets/illustrations/graduates.svg" alt="" width="720" height="620">
-            <figcaption>Juramos sanar. Hoy celebramos.</figcaption>
+            <button
+              class="button button--secondary cover__details-button"
+              id="toggleDetails"
+              type="button"
+              aria-controls="eventDetails"
+              aria-expanded="false"
+            >
+              Ver detalles del evento
+            </button>
           </figure>
         </section>
 
-        <section class="information" aria-labelledby="information-title">
+        <section class="information" id="eventDetails" aria-labelledby="information-title" hidden>
           <header class="section-heading">
-            <p class="eyebrow">Lo esencial</p>
-            <h2 id="information-title">La noche, en breve.</h2>
-            <p>Toca una tarjeta para ver más.</p>
+            <p class="eyebrow">Para quien quiere saber más</p>
+            <h2 id="information-title">Los detalles de la celebración.</h2>
+            <p>La fecha, el lugar y lo que contempla tu boleto, sin distraer de la invitación principal.</p>
           </header>
 
           <div class="information__grid">
@@ -338,13 +350,13 @@
       </article>
     </main>
 
-    <aside class="music-player" id="musicPlayer" aria-label="Reproductor de música" hidden>
+    <aside class="music-player is-paused" id="musicPlayer" aria-label="Reproductor de música">
       <button class="music-player__toggle" id="musicToggle" type="button" aria-label="Pausar música">
         <svg class="music-player__play" aria-hidden="true"><use href="#icon-play"></use></svg>
         <svg class="music-player__pause" aria-hidden="true"><use href="#icon-pause"></use></svg>
       </button>
       <span class="music-player__copy">
-        <small>Música</small>
+        <small id="musicStatus">Música</small>
         <strong>Canción de la generación</strong>
       </span>
       <span class="music-player__equalizer" aria-hidden="true">
