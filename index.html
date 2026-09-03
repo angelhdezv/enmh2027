@@ -23,7 +23,7 @@
       rel="stylesheet"
     >
     <link rel="icon" href="assets/monograma-enmh.svg" type="image/svg+xml">
-    <link rel="stylesheet" href="styles.css?v=0.0.3.4">
+    <link rel="stylesheet" href="styles.css?v=0.0.3.5">
     <script>
       document.documentElement.classList.add('js', 'intro-active');
       if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
@@ -32,7 +32,7 @@
       }
       window.scrollTo(0, 0);
     </script>
-    <script src="script.js?v=0.0.3.3" defer></script>
+    <script src="script.js?v=0.0.3.4" defer></script>
   </head>
 
   <body>
@@ -56,12 +56,6 @@
         <circle cx="6" cy="12" r="2.5"></circle>
         <circle cx="18" cy="19" r="2.5"></circle>
         <path d="m8.2 10.8 7.6-4.5M8.2 13.2l7.6 4.5"></path>
-      </symbol>
-      <symbol id="icon-play" viewBox="0 0 24 24">
-        <path d="m9 7 8 5-8 5V7Z"></path>
-      </symbol>
-      <symbol id="icon-pause" viewBox="0 0 24 24">
-        <path d="M9 7v10M15 7v10"></path>
       </symbol>
       <symbol id="icon-close" viewBox="0 0 24 24">
         <path d="m6 6 12 12M18 6 6 18"></path>
@@ -88,12 +82,25 @@
           <div class="envelope__inside"></div>
 
           <article class="letter-preview">
-            <div class="letter-preview__rule"></div>
-            <img src="assets/enmh-escudo.jpg" alt="" width="56" height="70">
-            <p>Escuela Nacional de<br>Medicina y Homeopatía</p>
-            <strong>Generación<br><span>2027</span></strong>
-            <small>Médico Cirujano y Homeópata</small>
-            <time datetime="2027-05-22">22 · MAYO · 2027</time>
+            <p class="letter-preview__school">Escuela Nacional de Medicina y Homeopatía</p>
+            <h2 class="letter-preview__degree">Médico Cirujano <em>y Homeópata</em></h2>
+            <p class="letter-preview__generation">Generación <strong>2027</strong></p>
+
+            <div class="letter-preview__ornament">
+              <span></span>
+              <svg><use href="#icon-asclepio"></use></svg>
+              <span></span>
+            </div>
+
+            <p class="letter-preview__statement">Juramos sanar. <em>Hoy celebramos.</em></p>
+            <img
+              class="letter-preview__graduates"
+              src="assets/illustrations/graduates.svg"
+              alt=""
+              width="720"
+              height="620"
+            >
+            <time datetime="2027-05-22">Sábado · 22 · Mayo · 2027</time>
           </article>
 
           <div class="envelope__face"></div>
@@ -134,16 +141,6 @@
           </a>
 
           <div class="paper__tools">
-            <div class="music-player is-paused" id="musicPlayer" aria-label="Reproductor de música">
-              <button class="music-player__toggle" id="musicToggle" type="button" aria-label="Reproducir música">
-                <svg class="music-player__play" aria-hidden="true"><use href="#icon-play"></use></svg>
-                <svg class="music-player__pause" aria-hidden="true"><use href="#icon-pause"></use></svg>
-              </button>
-              <span class="music-player__copy">
-                <small id="musicStatus">Música</small>
-              </span>
-            </div>
-
             <button class="utility-button" id="shareInvitation" type="button">
               <svg aria-hidden="true"><use href="#icon-share"></use></svg>
               Compartir
@@ -222,83 +219,91 @@
             <p class="sr-only" id="countdownStatus" aria-live="polite"></p>
           </section>
 
-          <section class="program" aria-labelledby="program-title">
-            <p class="eyebrow">Programa preliminar</p>
-            <h2 id="program-title">Itinerario</h2>
-            <p class="program__intro">Horarios sujetos a confirmación.</p>
+          <div class="paper__side">
+            <section class="program" aria-labelledby="program-title">
+              <p class="eyebrow">Programa preliminar</p>
+              <h2 id="program-title">Itinerario</h2>
+              <p class="program__intro">Horarios sujetos a confirmación.</p>
 
-            <ol class="timeline">
-              <li>
-                <time datetime="17:30">17:30</time>
-                <div><h3>Recepción</h3><p>Registro de invitados · Vestíbulo</p></div>
-              </li>
-              <li>
-                <time datetime="18:00">18:00</time>
-                <div><h3>Ceremonia</h3><p>Toma de protesta y entrega de títulos</p></div>
-              </li>
-              <li>
-                <time datetime="19:15">19:15</time>
-                <div><h3>Fotografías</h3><p>Sesión con familia · Jardín de los Cedros</p></div>
-              </li>
-              <li>
-                <time datetime="20:30">20:30</time>
-                <div><h3>Brindis</h3><p>Palabras y cena · Terraza Los Fresnos</p></div>
-              </li>
-              <li>
-                <time datetime="22:00">22:00</time>
-                <div><h3>Celebración</h3><p>Música y baile hasta la medianoche</p></div>
-              </li>
-            </ol>
+              <ol class="timeline">
+                <li>
+                  <time datetime="17:30">17:30</time>
+                  <div><h3>Recepción</h3><p>Registro de invitados · Vestíbulo</p></div>
+                </li>
+                <li>
+                  <time datetime="18:00">18:00</time>
+                  <div><h3>Ceremonia</h3><p>Toma de protesta y entrega de títulos</p></div>
+                </li>
+                <li>
+                  <time datetime="19:15">19:15</time>
+                  <div><h3>Fotografías</h3><p>Sesión con familia · Jardín de los Cedros</p></div>
+                </li>
+                <li>
+                  <time datetime="20:30">20:30</time>
+                  <div><h3>Brindis</h3><p>Palabras y cena · Terraza Los Fresnos</p></div>
+                </li>
+                <li>
+                  <time datetime="22:00">22:00</time>
+                  <div><h3>Celebración</h3><p>Música y baile hasta la medianoche</p></div>
+                </li>
+              </ol>
 
-            <img
-              class="program__illustration"
-              src="assets/illustrations/schedule.svg"
-              alt=""
-              width="360"
-              height="220"
-              loading="lazy"
-              decoding="async"
-            >
-          </section>
-        </div>
-
-        <section class="closing-details" aria-label="Vestimenta y acceso">
-          <section class="dress-code" aria-labelledby="dress-code-title">
-            <div class="dress-code__copy">
-              <div class="dress-code__ornament" aria-hidden="true"><span></span><i></i><span></span></div>
-              <p class="eyebrow">Código de vestimenta</p>
-              <h2 id="dress-code-title">Gala <em>de noche</em></h2>
-              <button
-                class="button button--outline dress-code__button"
-                id="openDressDetails"
-                type="button"
-                aria-haspopup="dialog"
-                aria-controls="dressDetailsDialog"
+              <img
+                class="program__illustration"
+                src="assets/illustrations/schedule.svg"
+                alt=""
+                width="360"
+                height="220"
+                loading="lazy"
+                decoding="async"
               >
-                Más información
-              </button>
-            </div>
+            </section>
 
-            <img
-              class="dress-code__illustration"
-              src="assets/illustrations/dress-code-atelier.png"
-              alt="Ilustración de referencia de vestido largo y traje de gala"
-              width="1536"
-              height="1024"
-              loading="lazy"
-              decoding="async"
-            >
-          </section>
+            <section class="dress-code" aria-labelledby="dress-code-title">
+              <div class="dress-code__copy">
+                <div class="dress-code__ornament" aria-hidden="true"><span></span><i></i><span></span></div>
+                <p class="eyebrow">Código de vestimenta</p>
+                <h2 id="dress-code-title">Gala <em>de noche</em></h2>
+                <button
+                  class="button button--outline dress-code__button"
+                  id="openDressDetails"
+                  type="button"
+                  aria-haspopup="dialog"
+                  aria-controls="dressDetailsDialog"
+                >
+                  Más información
+                </button>
+              </div>
+
+              <img
+                class="dress-code__illustration"
+                src="assets/illustrations/dress-code-atelier.png"
+                alt="Ilustración de referencia de vestido largo y traje de gala"
+                width="1536"
+                height="1024"
+                loading="lazy"
+                decoding="async"
+              >
+            </section>
+          </div>
 
           <aside class="ticket-reminder" aria-labelledby="ticket-title">
-            <img src="assets/illustrations/ticket.svg" alt="" width="360" height="220" loading="lazy">
+            <img
+              class="ticket-reminder__illustration"
+              src="assets/illustrations/ticket-invitation.webp"
+              alt=""
+              width="1200"
+              height="800"
+              loading="lazy"
+              decoding="async"
+            >
             <div>
               <p class="eyebrow">Importante</p>
               <h2 id="ticket-title">No olvides tu boleto físico.</h2>
               <p>Tráelo contigo el día del evento.</p>
             </div>
           </aside>
-        </section>
+        </div>
 
         <footer class="paper__footer">
           <span>ENMH · IPN · MMXXVII</span>
@@ -318,8 +323,6 @@
         </footer>
       </article>
     </main>
-
-    <audio id="eventAudio" data-src="assets/audio/cancion-evento.mp3" preload="none" loop></audio>
 
     <dialog class="dress-dialog" id="dressDetailsDialog" aria-labelledby="dress-dialog-title">
       <div class="dress-dialog__paper">

@@ -39,20 +39,12 @@ Esta invitación es genérica y no incluye RSVP ni formulario de confirmación.
 
 El calendario se descarga como evento de día completo para no inventar un horario. Su configuración vive al inicio de `script.js`, en el objeto `EVENT`.
 
-## Música
-
-El reproductor está integrado en la parte superior de la invitación. Comienza al tocar el sello y se reinicia al recargar. Coloca el archivo autorizado en:
-
-`assets/audio/cancion-evento.mp3`
-
-Mientras el archivo no exista, el reproductor permanece visible y muestra “Próximamente”.
-
 ## Archivos
 
 - `index.html`: estructura y contenido.
 - `styles.css`: dirección de arte, animación y responsividad.
-- `script.js`: apertura, restauración de estado, calendario, compartir, cuenta regresiva y música.
-- `assets/`: emblema ENMH, monograma, branding, ilustraciones SVG y PNG, y audio.
+- `script.js`: apertura, restauración de estado, calendario, compartir y cuenta regresiva.
+- `assets/`: emblema ENMH, monograma, branding e ilustraciones.
 
 ## Accesibilidad
 

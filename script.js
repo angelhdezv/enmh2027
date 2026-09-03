@@ -17,10 +17,6 @@ const envelopeScene = document.querySelector('#envelopeScene');
 const letterPreview = document.querySelector('.letter-preview');
 const addCalendar = document.querySelector('#addCalendar');
 const shareInvitation = document.querySelector('#shareInvitation');
-const musicPlayer = document.querySelector('#musicPlayer');
-const musicToggle = document.querySelector('#musicToggle');
-const musicStatus = document.querySelector('#musicStatus');
-const eventAudio = document.querySelector('#eventAudio');
 const countdown = document.querySelector('#countdown');
 const countdownStatus = document.querySelector('#countdownStatus');
 const openDressDetails = document.querySelector('#openDressDetails');
@@ -37,8 +33,6 @@ const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 let openingFallback;
 let leavingTimer;
 let toastTimer;
-let soundtrackRequested = false;
-let soundtrackUnavailable = false;
 
 if ('scrollRestoration' in history) {
   history.scrollRestoration = 'manual';
@@ -62,59 +56,6 @@ function setIntroActive(active) {
   invitation.inert = active;
 }
 
-function syncMusicPlayer() {
-  const isPaused = eventAudio.paused;
-  const isUnavailable = soundtrackUnavailable || Boolean(eventAudio.error);
-  musicPlayer.classList.toggle('is-paused', isPaused);
-  musicPlayer.classList.toggle('is-unavailable', isUnavailable);
-  musicStatus.textContent = isUnavailable ? 'Próximamente' : 'Música';
-  musicToggle.setAttribute(
-    'aria-label',
-    isUnavailable ? 'La canción estará disponible próximamente' : isPaused ? 'Reproducir música' : 'Pausar música',
-  );
-}
-
-function loadSoundtrack() {
-  if (eventAudio.getAttribute('src')) return;
-
-  const source = eventAudio.dataset.src;
-  if (!source) {
-    soundtrackUnavailable = true;
-    syncMusicPlayer();
-    return;
-  }
-
-  eventAudio.src = source;
-}
-
-function requestSoundtrack() {
-  if (soundtrackRequested) return;
-
-  soundtrackRequested = true;
-  soundtrackUnavailable = false;
-  eventAudio.volume = 0.6;
-  loadSoundtrack();
-
-  if (soundtrackUnavailable) return;
-
-  const playRequest = eventAudio.play();
-  if (playRequest) {
-    playRequest.catch(() => {
-      if (eventAudio.error) soundtrackUnavailable = true;
-      syncMusicPlayer();
-    });
-  }
-}
-
-function resetSoundtrack() {
-  soundtrackRequested = false;
-  soundtrackUnavailable = false;
-  eventAudio.pause();
-  eventAudio.removeAttribute('src');
-  eventAudio.load();
-  syncMusicPlayer();
-}
-
 function resetOpening() {
   window.clearTimeout(openingFallback);
   window.clearTimeout(leavingTimer);
@@ -124,7 +65,6 @@ function resetOpening() {
   openSeal.setAttribute('aria-expanded', 'false');
   envelopeScene.style.transform = '';
   if (dressDetailsDialog.open) dressDetailsDialog.close();
-  resetSoundtrack();
   setIntroActive(true);
   forceScrollTop();
 }
@@ -162,7 +102,6 @@ function openExperience() {
   openSeal.setAttribute('aria-expanded', 'true');
   openSeal.blur();
   envelopeScene.style.transform = '';
-  requestSoundtrack();
 
   if (reducedMotion.matches) {
     opening.classList.add('is-opening');
@@ -192,7 +131,6 @@ function openExperience() {
 
 function skipExperience() {
   if (opening.dataset.state === 'complete') return;
-  requestSoundtrack();
   opening.classList.add('is-opening');
   revealInvitation({ immediate: true });
 }
@@ -295,23 +233,6 @@ async function share() {
   }
 }
 
-function toggleSoundtrack() {
-  if (soundtrackUnavailable || eventAudio.error) {
-    showToast('La canción todavía no está disponible.');
-    return;
-  }
-
-  if (eventAudio.paused) {
-    soundtrackRequested = true;
-    loadSoundtrack();
-    const playRequest = eventAudio.play();
-    if (playRequest) playRequest.catch(() => showToast('La canción todavía no está disponible.'));
-    return;
-  }
-
-  eventAudio.pause();
-}
-
 function updateCountdown() {
   const remaining = Math.max(0, EVENT_START - Date.now());
   const totalSeconds = Math.floor(remaining / 1000);
@@ -365,16 +286,9 @@ opening.addEventListener('pointermove', moveEnvelope);
 opening.addEventListener('pointerleave', resetEnvelopePosition);
 addCalendar.addEventListener('click', downloadCalendarEvent);
 shareInvitation.addEventListener('click', share);
-musicToggle.addEventListener('click', toggleSoundtrack);
 openDressDetails.addEventListener('click', openDressCodeDetails);
 dressDetailsDialog.addEventListener('close', closeDressCodeDetails);
 dressDetailsDialog.addEventListener('click', closeDressCodeFromBackdrop);
-eventAudio.addEventListener('play', syncMusicPlayer);
-eventAudio.addEventListener('pause', syncMusicPlayer);
-eventAudio.addEventListener('error', () => {
-  soundtrackUnavailable = true;
-  syncMusicPlayer();
-});
 
 window.addEventListener('pageshow', (event) => {
   if (location.hash) {
