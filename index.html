@@ -23,7 +23,7 @@
       rel="stylesheet"
     >
     <link rel="icon" href="assets/monograma-enmh.svg" type="image/svg+xml">
-    <link rel="stylesheet" href="styles.css?v=0.0.3.3">
+    <link rel="stylesheet" href="styles.css?v=0.0.3.4">
     <script>
       document.documentElement.classList.add('js', 'intro-active');
       if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
@@ -141,7 +141,6 @@
               </button>
               <span class="music-player__copy">
                 <small id="musicStatus">Música</small>
-                <strong>Canción de la generación</strong>
               </span>
             </div>
 
@@ -268,7 +267,7 @@
             <div class="dress-code__copy">
               <div class="dress-code__ornament" aria-hidden="true"><span></span><i></i><span></span></div>
               <p class="eyebrow">Código de vestimenta</p>
-              <h2 id="dress-code-title">Formal <em>· Etiqueta</em></h2>
+              <h2 id="dress-code-title">Gala <em>de noche</em></h2>
               <button
                 class="button button--outline dress-code__button"
                 id="openDressDetails"
@@ -283,7 +282,7 @@
             <img
               class="dress-code__illustration"
               src="assets/illustrations/dress-code-atelier.png"
-              alt="Ilustración de referencia de vestido largo y traje formal"
+              alt="Ilustración de referencia de vestido largo y traje de gala"
               width="1536"
               height="1024"
               loading="lazy"
@@ -330,33 +329,32 @@
           </button>
         </form>
 
-        <p class="eyebrow">Indicaciones preliminares</p>
-        <h2 id="dress-dialog-title">Formal <em>· Etiqueta</em></h2>
-        <p class="dress-dialog__intro">Una guía breve para conservar el carácter formal de la celebración.</p>
+        <p class="eyebrow">Código de vestimenta</p>
+        <h2 id="dress-dialog-title">Gala <em>de noche</em></h2>
+        <p class="dress-dialog__intro">Una guía breve para conservar la elegancia de la velada.</p>
 
         <div class="dress-dialog__guides">
-          <section>
-            <h3>Ellas</h3>
+          <section class="dress-dialog__guide dress-dialog__guide--allowed">
+            <h3>Permitido</h3>
             <ul>
-              <li>Vestido largo o midi</li>
-              <li>Tacón cómodo</li>
-              <li>Joyería discreta</li>
+              <li>Smoking o traje oscuro con corbata o moño</li>
+              <li>Vestidos largos de noche</li>
+              <li>Zapatos de vestir</li>
+              <li>Accesorios elegantes</li>
             </ul>
           </section>
-          <section>
-            <h3>Ellos</h3>
+          <section class="dress-dialog__guide dress-dialog__guide--not-allowed">
+            <h3>No permitido</h3>
             <ul>
-              <li>Traje oscuro</li>
-              <li>Camisa blanca</li>
-              <li>Corbata opcional</li>
+              <li>Camisetas, polos o prendas deportivas</li>
+              <li>Jeans o pantalones de mezclilla</li>
+              <li>Tenis o zapatos deportivos</li>
+              <li>Shorts o prendas cortas</li>
             </ul>
           </section>
         </div>
 
-        <div class="dress-dialog__notes">
-          <p><strong>Graduados</strong> Toga y birrete durante la ceremonia.</p>
-          <p><strong>Evita</strong> Blanco total y tonos neón.</p>
-        </div>
+        <p class="dress-dialog__closing">Agradecemos su colaboración para mantener la elegancia de la velada.</p>
       </div>
     </dialog>
 
