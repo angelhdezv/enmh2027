@@ -4,7 +4,7 @@ Invitación digital para la Generación 2027 de **Médico Cirujano y Homeópata*
 
 ## Concepto
 
-La experiencia comienza con un sobre guinda y un sello negro. Al romper el sello, la tarjeta emerge y da paso a una sola superficie editorial: portada, programa y datos esenciales forman parte de la misma invitación, sin convertirse en una landing page convencional. La dirección visual usa la paleta institucional del IPN, Noto Sans para el sistema tipográfico y Cormorant Garamond como tipografía de ocasión.
+La experiencia comienza con un sobre guinda y un sello negro. Al romper el sello, la tarjeta emerge y da paso a una sola superficie editorial: portada, cuenta regresiva, itinerario, código de vestimenta y recordatorio de acceso forman parte de la misma invitación, sin convertirse en una landing page convencional. La dirección visual conserva el minimalismo de `v0.0.2` y añade ilustraciones SVG transparentes como acentos laterales e inferiores.
 
 El bastón de Asclepio de una sola serpiente se usa como motivo médico. El emblema institucional se conserva como imagen, sin redibujarlo ni alterarlo.
 
@@ -26,13 +26,16 @@ Confirmados:
 - Jardín Volterra, Zona Esmeralda.
 - Duración total de nueve horas.
 - Recepción, ceremonia de generación, cena en cuatro tiempos, brindis, barra libre, DJ, entretenimiento en vivo, tornafiesta y fotografía panorámica.
+- Cada invitado debe llevar su boleto físico el día del evento.
+- Código de vestimenta provisional: formal · etiqueta, con una guía desplegable inspirada temporalmente en el demo de La Salle.
 
 Pendientes antes de publicar como versión final:
 
 - Hora exacta y dirección completa.
-- Código de vestimenta.
-- Número de pases y fecha límite de confirmación.
-- Formulario, teléfono o WhatsApp de confirmación.
+
+El itinerario visible se tomó temporalmente del demo de La Salle para reservar el espacio de diseño y está marcado como preliminar. Debe sustituirse cuando el cliente confirme el programa real.
+
+Esta invitación es genérica y no incluye RSVP ni formulario de confirmación.
 
 El calendario se descarga como evento de día completo para no inventar un horario. Su configuración vive al inicio de `script.js`, en el objeto `EVENT`.
 
@@ -40,8 +43,8 @@ El calendario se descarga como evento de día completo para no inventar un horar
 
 - `index.html`: estructura y contenido.
 - `styles.css`: dirección de arte, animación y responsividad.
-- `script.js`: apertura, restauración de estado, calendario, compartir y modal informativo.
-- `assets/`: emblema ENMH y monograma del sitio.
+- `script.js`: apertura, restauración de estado, calendario, compartir y cuenta regresiva.
+- `assets/`: emblema ENMH, monograma, branding e ilustraciones.
 
 ## Accesibilidad
 

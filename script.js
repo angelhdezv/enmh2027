@@ -1,23 +1,32 @@
 const EVENT = {
-  name: 'Graduación ENMH · Generación 2027',
+  name: 'Médico Cirujano y Homeópata · Generación 2027',
   startDate: '20270522',
   endDate: '20270523',
   location: 'Jardín Volterra, Zona Esmeralda, Estado de México',
-  description:
-    'Celebración de la Generación 2027 de Médico Cirujano y Homeópata, ENMH · IPN. Horario exacto por confirmar.',
+  description: 'Celebración de la Generación 2027 de Médico Cirujano y Homeópata, ENMH · IPN.',
 };
+
+const EVENT_START = Date.UTC(2027, 4, 22, 6, 0, 0);
 
 const opening = document.querySelector('#opening');
 const invitation = document.querySelector('#invitacion');
+const skipToInvitation = document.querySelector('#skipToInvitation');
 const openSeal = document.querySelector('#openSeal');
 const skipOpening = document.querySelector('#skipOpening');
 const envelopeScene = document.querySelector('#envelopeScene');
 const letterPreview = document.querySelector('.letter-preview');
 const addCalendar = document.querySelector('#addCalendar');
-const dialogCalendar = document.querySelector('#dialogCalendar');
 const shareInvitation = document.querySelector('#shareInvitation');
-const rsvpDialog = document.querySelector('#rsvpDialog');
-const closeRsvp = document.querySelector('#closeRsvp');
+const countdown = document.querySelector('#countdown');
+const countdownStatus = document.querySelector('#countdownStatus');
+const openDressDetails = document.querySelector('#openDressDetails');
+const dressDetailsDialog = document.querySelector('#dressDetailsDialog');
+const countdownUnits = {
+  days: document.querySelector('[data-countdown-days]'),
+  hours: document.querySelector('[data-countdown-hours]'),
+  minutes: document.querySelector('[data-countdown-minutes]'),
+  seconds: document.querySelector('[data-countdown-seconds]'),
+};
 const toast = document.querySelector('#toast');
 const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 
@@ -55,6 +64,7 @@ function resetOpening() {
   opening.dataset.state = 'idle';
   openSeal.setAttribute('aria-expanded', 'false');
   envelopeScene.style.transform = '';
+  if (dressDetailsDialog.open) dressDetailsDialog.close();
   setIntroActive(true);
   forceScrollTop();
 }
@@ -128,7 +138,7 @@ function skipExperience() {
 function trapOpeningFocus(event) {
   if (event.key !== 'Tab' || opening.hidden || opening.dataset.state !== 'idle') return;
 
-  const focusable = [skipOpening, openSeal];
+  const focusable = [skipToInvitation, skipOpening, openSeal];
   const currentIndex = focusable.indexOf(document.activeElement);
 
   if (event.shiftKey && currentIndex <= 0) {
@@ -138,6 +148,13 @@ function trapOpeningFocus(event) {
     event.preventDefault();
     focusable[0].focus();
   }
+}
+
+function handleSkipLink(event) {
+  if (opening.hidden) return;
+
+  event.preventDefault();
+  skipExperience();
 }
 
 function moveEnvelope(event) {
@@ -216,34 +233,62 @@ async function share() {
   }
 }
 
-function openRsvpDialog() {
-  if (typeof rsvpDialog.showModal === 'function') {
-    rsvpDialog.showModal();
-  } else {
-    rsvpDialog.setAttribute('open', '');
+function updateCountdown() {
+  const remaining = Math.max(0, EVENT_START - Date.now());
+  const totalSeconds = Math.floor(remaining / 1000);
+  const days = Math.floor(totalSeconds / 86400);
+  const hours = Math.floor((totalSeconds % 86400) / 3600);
+  const minutes = Math.floor((totalSeconds % 3600) / 60);
+  const seconds = totalSeconds % 60;
+
+  countdownUnits.days.textContent = String(days).padStart(3, '0');
+  countdownUnits.hours.textContent = String(hours).padStart(2, '0');
+  countdownUnits.minutes.textContent = String(minutes).padStart(2, '0');
+  countdownUnits.seconds.textContent = String(seconds).padStart(2, '0');
+
+  if (remaining === 0) {
+    countdown.classList.add('is-complete');
+    countdownStatus.textContent = 'Hoy celebramos la graduación.';
   }
 }
 
-function closeRsvpDialog() {
-  rsvpDialog.close();
+function openDressCodeDetails() {
+  if (typeof dressDetailsDialog.showModal === 'function') {
+    dressDetailsDialog.showModal();
+  } else {
+    dressDetailsDialog.setAttribute('open', '');
+  }
+  document.documentElement.classList.add('dialog-active');
+}
+
+function closeDressCodeDetails() {
+  document.documentElement.classList.remove('dialog-active');
+}
+
+function closeDressCodeFromBackdrop(event) {
+  if (event.target !== dressDetailsDialog) return;
+
+  const bounds = dressDetailsDialog.getBoundingClientRect();
+  const isInside =
+    event.clientX >= bounds.left &&
+    event.clientX <= bounds.right &&
+    event.clientY >= bounds.top &&
+    event.clientY <= bounds.bottom;
+
+  if (!isInside) dressDetailsDialog.close();
 }
 
 openSeal.addEventListener('click', openExperience);
 skipOpening.addEventListener('click', skipExperience);
+skipToInvitation.addEventListener('click', handleSkipLink);
 opening.addEventListener('keydown', trapOpeningFocus);
 opening.addEventListener('pointermove', moveEnvelope);
 opening.addEventListener('pointerleave', resetEnvelopePosition);
 addCalendar.addEventListener('click', downloadCalendarEvent);
-dialogCalendar.addEventListener('click', downloadCalendarEvent);
 shareInvitation.addEventListener('click', share);
-closeRsvp.addEventListener('click', closeRsvpDialog);
-document.querySelectorAll('[data-open-rsvp]').forEach((button) => {
-  button.addEventListener('click', openRsvpDialog);
-});
-
-rsvpDialog.addEventListener('click', (event) => {
-  if (event.target === rsvpDialog) closeRsvpDialog();
-});
+openDressDetails.addEventListener('click', openDressCodeDetails);
+dressDetailsDialog.addEventListener('close', closeDressCodeDetails);
+dressDetailsDialog.addEventListener('click', closeDressCodeFromBackdrop);
 
 window.addEventListener('pageshow', (event) => {
   if (location.hash) {
@@ -256,4 +301,6 @@ window.addEventListener('pageshow', (event) => {
   }
 });
 
+updateCountdown();
+window.setInterval(updateCountdown, 1000);
 resetOpening();
