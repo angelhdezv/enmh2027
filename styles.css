@@ -1217,30 +1217,30 @@ svg {
 
 .ticket-reminder {
   position: relative;
-  display: grid;
+  display: flex;
   grid-column: 2;
   grid-row: 2;
-  align-content: center;
+  flex-direction: column;
+  justify-content: center;
+  gap: clamp(1.25rem, 2vw, 1.75rem);
   overflow: hidden;
   background: rgba(111, 29, 70, 0.025);
   border-top: 1px solid var(--line);
 }
 
 .ticket-reminder__illustration {
-  position: absolute;
-  right: -3.5rem;
-  bottom: -2rem;
-  width: 28rem;
-  max-width: none;
+  display: block;
+  width: min(100%, 28rem);
   height: auto;
-  opacity: 0.52;
+  margin: 0 auto;
+  opacity: 0.68;
   mix-blend-mode: multiply;
 }
 
 .ticket-reminder > div {
   position: relative;
   z-index: 1;
-  max-width: 15rem;
+  max-width: 18rem;
 }
 
 .ticket-reminder h2 {
@@ -1672,15 +1672,10 @@ html.dialog-active body {
   }
 
   .ticket-reminder {
-    min-height: 280px;
+    min-height: 0;
     grid-column: 1;
     grid-row: 5;
-  }
-
-  .ticket-reminder__illustration {
-    right: -3rem;
-    bottom: -1.5rem;
-    width: 30rem;
+    gap: 1.5rem;
   }
 
   .paper__footer {
@@ -1725,11 +1720,6 @@ html.dialog-active body {
 
   .dress-code__illustration {
     width: min(92%, 23rem);
-  }
-
-  .ticket-reminder__illustration {
-    right: -5rem;
-    width: 28rem;
   }
 
   .dress-dialog__paper {
