@@ -23,7 +23,7 @@
       rel="stylesheet"
     >
     <link rel="icon" href="assets/monograma-enmh.svg" type="image/svg+xml">
-    <link rel="stylesheet" href="styles.css?v=0.0.3.6">
+    <link rel="stylesheet" href="styles.css?v=0.0.3.7">
     <script>
       document.documentElement.classList.add('js', 'intro-active');
       if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
@@ -32,7 +32,7 @@
       }
       window.scrollTo(0, 0);
     </script>
-    <script src="script.js?v=0.0.3.4" defer></script>
+    <script src="script.js?v=0.0.3.5" defer></script>
   </head>
 
   <body>
@@ -141,6 +141,19 @@
           </a>
 
           <div class="paper__tools">
+            <div class="music-player is-paused" id="musicPlayer">
+              <button class="music-player__toggle" id="musicToggle" type="button" aria-label="Reproducir canción">
+                <svg class="music-player__vinyl" viewBox="0 0 48 48" aria-hidden="true">
+                  <circle class="music-player__vinyl-disc" cx="24" cy="24" r="21"></circle>
+                  <circle class="music-player__vinyl-groove" cx="24" cy="24" r="16"></circle>
+                  <circle class="music-player__vinyl-groove" cx="24" cy="24" r="12"></circle>
+                  <circle class="music-player__vinyl-label" cx="24" cy="24" r="7"></circle>
+                  <circle class="music-player__vinyl-hole" cx="24" cy="24" r="1.5"></circle>
+                  <path class="music-player__vinyl-shine" d="M12.5 18.5A13.5 13.5 0 0 1 20 11"></path>
+                </svg>
+              </button>
+            </div>
+
             <button class="utility-button" id="shareInvitation" type="button">
               <svg aria-hidden="true"><use href="#icon-share"></use></svg>
               Compartir
@@ -323,6 +336,8 @@
         </footer>
       </article>
     </main>
+
+    <audio id="eventAudio" data-src="assets/audio/cancion-evento.mp3" preload="none" loop></audio>
 
     <dialog class="dress-dialog" id="dressDetailsDialog" aria-labelledby="dress-dialog-title">
       <div class="dress-dialog__paper">
