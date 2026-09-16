@@ -1,3 +1,5 @@
+'use strict';
+
 const EVENT = {
   name: 'Médico Cirujano y Homeópata · Generación 2027',
   startDate: '20270522',
@@ -5,228 +7,354 @@ const EVENT = {
   location: 'Jardín Volterra, Zona Esmeralda, Estado de México',
   description: 'Celebración de la Generación 2027 de Médico Cirujano y Homeópata, ENMH · IPN.',
 };
-
+// Midnight in Mexico City; the event's actual starting time is still unconfirmed.
 const EVENT_START = Date.UTC(2027, 4, 22, 6, 0, 0);
-
-const opening = document.querySelector('#opening');
-const invitation = document.querySelector('#invitacion');
-const skipToInvitation = document.querySelector('#skipToInvitation');
-const openSeal = document.querySelector('#openSeal');
-const skipOpening = document.querySelector('#skipOpening');
-const envelopeScene = document.querySelector('#envelopeScene');
-const letterPreview = document.querySelector('.letter-preview');
-const addCalendar = document.querySelector('#addCalendar');
-const shareInvitation = document.querySelector('#shareInvitation');
-const musicPlayer = document.querySelector('#musicPlayer');
-const musicToggle = document.querySelector('#musicToggle');
-const eventAudio = document.querySelector('#eventAudio');
-const countdown = document.querySelector('#countdown');
-const countdownStatus = document.querySelector('#countdownStatus');
-const openDressDetails = document.querySelector('#openDressDetails');
-const dressDetailsDialog = document.querySelector('#dressDetailsDialog');
-const countdownUnits = {
-  days: document.querySelector('[data-countdown-days]'),
-  hours: document.querySelector('[data-countdown-hours]'),
-  minutes: document.querySelector('[data-countdown-minutes]'),
-  seconds: document.querySelector('[data-countdown-seconds]'),
-};
-const toast = document.querySelector('#toast');
+const root = document.documentElement;
+const $ = (selector) => document.querySelector(selector);
+const opening = $('#opening');
+const invitation = $('#invitacion');
+const cover = $('#coverCard');
+const coverSlot = $('#coverSlot');
+const envelopeStage = $('#envelopeStage');
+const seal = $('#openSeal');
+const skipOpening = $('#skipOpening');
+const audio = $('#eventAudio');
+const musicPlayer = $('#musicPlayer');
+const musicToggle = $('#musicToggle');
+const motionToggle = $('#motionToggle');
+const dressDialog = $('#dressDetailsDialog');
 const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
-
+let openingRun = 0;
 let openingFallback;
-let leavingTimer;
+let coverGeometry;
 let toastTimer;
 let soundtrackRequested = false;
 let soundtrackUnavailable = false;
+let lineAnimator;
+const openingAnimations = new Set();
 
-if ('scrollRestoration' in history) {
-  history.scrollRestoration = 'manual';
-}
-
-function forceScrollTop() {
-  const previousBehavior = document.documentElement.style.scrollBehavior;
-  document.documentElement.style.scrollBehavior = 'auto';
-  window.scrollTo(0, 0);
-  document.documentElement.scrollTop = 0;
-  document.body.scrollTop = 0;
-
-  requestAnimationFrame(() => {
-    window.scrollTo(0, 0);
-    document.documentElement.style.scrollBehavior = previousBehavior;
-  });
-}
-
-function setIntroActive(active) {
-  document.documentElement.classList.toggle('intro-active', active);
-  invitation.inert = active;
+function showToast(message) {
+  window.clearTimeout(toastTimer);
+  $('#toast').textContent = message;
+  $('#toast').classList.add('is-visible');
+  toastTimer = window.setTimeout(() => $('#toast').classList.remove('is-visible'), 3000);
 }
 
 function syncMusicPlayer() {
-  const isPaused = eventAudio.paused;
-  const isUnavailable = soundtrackUnavailable || Boolean(eventAudio.error);
-  musicPlayer.classList.toggle('is-paused', isPaused);
-  musicPlayer.classList.toggle('is-unavailable', isUnavailable);
-  musicToggle.setAttribute(
-    'aria-label',
-    isUnavailable ? 'La canción no está disponible' : isPaused ? 'Reproducir canción' : 'Pausar canción',
-  );
+  const unavailable = soundtrackUnavailable || Boolean(audio.error);
+  const label = unavailable ? 'La canción no está disponible' : audio.paused ? 'Reproducir canción' : 'Pausar canción';
+  musicPlayer.classList.toggle('is-paused', audio.paused);
+  musicPlayer.classList.toggle('is-unavailable', unavailable);
+  musicToggle.setAttribute('aria-label', label);
+  musicToggle.setAttribute('title', label);
+  musicToggle.setAttribute('aria-pressed', String(!audio.paused));
 }
 
-function loadSoundtrack() {
-  if (eventAudio.getAttribute('src')) return;
-
-  const source = eventAudio.dataset.src;
-  if (!source) {
-    soundtrackUnavailable = true;
-    syncMusicPlayer();
-    return;
+function playSoundtrack() {
+  if (!audio.getAttribute('src')) audio.src = audio.dataset.src;
+  audio.volume = 0.6;
+  soundtrackUnavailable = false;
+  const playRequest = audio.play();
+  if (playRequest) {
+    playRequest.catch(() => {
+      soundtrackUnavailable = Boolean(audio.error);
+      syncMusicPlayer();
+    });
   }
-
-  eventAudio.src = source;
 }
 
 function requestSoundtrack() {
   if (soundtrackRequested) return;
-
   soundtrackRequested = true;
-  soundtrackUnavailable = false;
-  eventAudio.volume = 0.6;
-  loadSoundtrack();
+  playSoundtrack();
+}
 
-  if (soundtrackUnavailable) return;
-
-  const playRequest = eventAudio.play();
-  if (playRequest) {
-    playRequest.catch(() => {
-      if (eventAudio.error) soundtrackUnavailable = true;
-      syncMusicPlayer();
-    });
+function toggleSoundtrack() {
+  if (audio.paused) {
+    soundtrackRequested = true;
+    playSoundtrack();
+  } else {
+    audio.pause();
   }
 }
 
 function resetSoundtrack() {
   soundtrackRequested = false;
   soundtrackUnavailable = false;
-  eventAudio.pause();
-  eventAudio.removeAttribute('src');
-  eventAudio.load();
+  audio.pause();
+  audio.removeAttribute('src');
+  audio.load();
   syncMusicPlayer();
 }
 
-function resetOpening() {
-  window.clearTimeout(openingFallback);
-  window.clearTimeout(leavingTimer);
-  opening.hidden = false;
-  opening.classList.remove('is-opening', 'is-opened', 'is-leaving');
-  opening.dataset.state = 'idle';
-  openSeal.setAttribute('aria-expanded', 'false');
-  envelopeScene.style.transform = '';
-  if (dressDetailsDialog.open) dressDetailsDialog.close();
-  resetSoundtrack();
-  setIntroActive(true);
-  forceScrollTop();
-}
+function createLineAnimator() {
+  let frameRequest = 0;
+  let manuallyPaused = false;
+  const groups = Array.from(document.querySelectorAll('[data-line-scene]'), (element) => ({
+    element,
+    path: element.querySelector('[data-line-path]'),
+    drawings: ENMH_ART.scenes[element.dataset.lineScene],
+    elapsed: element.dataset.lineScene === 'cover' ? ENMH_ART.timing.draw : 0,
+    previous: null,
+    index: -1,
+    visible: false,
+  }));
 
-function revealInvitation({ immediate = false } = {}) {
-  if (opening.dataset.state === 'complete') return;
-
-  opening.dataset.state = 'complete';
-  opening.classList.add('is-opened');
-  forceScrollTop();
-
-  const leave = () => {
-    opening.classList.add('is-leaving');
-    setIntroActive(false);
-    forceScrollTop();
-    invitation.focus({ preventScroll: true });
-
-    leavingTimer = window.setTimeout(() => {
-      opening.hidden = true;
-      forceScrollTop();
-    }, immediate ? 0 : 760);
-  };
-
-  if (immediate || reducedMotion.matches) {
-    leave();
-  } else {
-    leavingTimer = window.setTimeout(leave, 560);
+  function paint(group, frame) {
+    if (frame.index !== group.index) {
+      group.path.setAttribute('d', ENMH_ART.drawings[group.drawings[frame.index]].path);
+      group.index = frame.index;
+    }
+    group.path.style.strokeDasharray = '1 1';
+    group.path.style.strokeDashoffset = String(frame.offset);
+    // Avoid a round-cap dot at the point where the pen starts or leaves the paper.
+    group.path.style.visibility = frame.progress > 0 ? 'visible' : 'hidden';
   }
+
+  function canRun() {
+    return opening.hidden && !document.hidden && !dressDialog.open && !reducedMotion.matches && !manuallyPaused;
+  }
+
+  function tick(now) {
+    frameRequest = 0;
+    if (!canRun()) return;
+    for (const group of groups) {
+      if (!group.visible) continue;
+      if (group.previous !== null) group.elapsed += now - group.previous;
+      group.previous = now;
+      paint(group, ENMH_ART.frameAt(group.elapsed, group.drawings.length));
+    }
+    if (groups.some((group) => group.visible)) frameRequest = requestAnimationFrame(tick);
+  }
+
+  function sync() {
+    cancelAnimationFrame(frameRequest);
+    frameRequest = 0;
+    for (const group of groups) {
+      group.previous = null;
+      if (reducedMotion.matches) paint(group, { index: 0, offset: 0, progress: 1 });
+    }
+    if (canRun() && groups.some((group) => group.visible)) frameRequest = requestAnimationFrame(tick);
+  }
+
+  function measureVisibility() {
+    for (const group of groups) {
+      const rect = group.element.getBoundingClientRect();
+      group.visible = rect.bottom > 0 && rect.top < window.innerHeight && rect.right > 0 && rect.left < window.innerWidth;
+    }
+    sync();
+  }
+
+  if ('IntersectionObserver' in window) {
+    const observer = new IntersectionObserver((entries) => {
+      for (const entry of entries) {
+        const group = groups.find((item) => item.element === entry.target);
+        group.visible = entry.isIntersecting;
+      }
+      sync();
+    });
+    groups.forEach((group) => observer.observe(group.element));
+  } else {
+    window.addEventListener('scroll', measureVisibility, { passive: true });
+    window.addEventListener('resize', measureVisibility);
+  }
+
+  document.addEventListener('visibilitychange', sync);
+  motionToggle.addEventListener('click', () => {
+    manuallyPaused = !manuallyPaused;
+    const label = manuallyPaused ? 'Reanudar ilustraciones' : 'Pausar ilustraciones';
+    motionToggle.setAttribute('aria-pressed', String(manuallyPaused));
+    motionToggle.setAttribute('aria-label', label);
+    motionToggle.setAttribute('title', label);
+    motionToggle.querySelector('use').setAttribute('href', manuallyPaused ? '#icon-play' : '#icon-pause');
+    sync();
+  });
+
+  return {
+    sync,
+    measureVisibility,
+    reset() {
+      for (const group of groups) {
+        group.elapsed = group.element.dataset.lineScene === 'cover' ? ENMH_ART.timing.draw : 0;
+        paint(group, { index: 0, offset: 0, progress: 1 });
+      }
+      sync();
+    },
+  };
 }
 
-function openExperience() {
+function restoreCover() {
+  // Moving, never cloning, keeps one heading, one set of actions and identical type layout.
+  coverSlot.append(cover);
+  cover.classList.remove('is-travelling');
+  cover.removeAttribute('style');
+  cover.removeAttribute('aria-hidden');
+  cover.inert = false;
+  coverSlot.style.height = '';
+}
+
+function placeCoverInEnvelope() {
+  restoreCover();
+  const cardRect = cover.getBoundingClientRect();
+  const stageRect = envelopeStage.getBoundingClientRect();
+  if (!cardRect.width || !cardRect.height || !stageRect.height) return false;
+  const layout = ENMH_ART.envelopeLayout(cardRect, stageRect);
+  coverGeometry = { cardRect, ...layout };
+  const properties = {
+    '--envelope-left': layout.left,
+    '--envelope-top': layout.top,
+    '--envelope-width': layout.width,
+    '--envelope-height': layout.height,
+    '--flap-height': Math.min(layout.width * 0.48, layout.height * 0.56),
+  };
+  for (const [name, value] of Object.entries(properties)) opening.style.setProperty(name, `${value}px`);
+  coverSlot.style.height = `${cardRect.height}px`;
+  cover.classList.add('is-travelling');
+  Object.assign(cover.style, {
+    left: `${cardRect.left}px`, top: `${cardRect.top}px`,
+    width: `${cardRect.width}px`, height: `${cardRect.height}px`,
+    visibility: 'hidden',
+    transform: coverTransform(layout.cardX, layout.cardY),
+  });
+  cover.setAttribute('aria-hidden', 'true');
+  cover.inert = true;
+  opening.append(cover);
+  return true;
+}
+
+function coverTransform(x, y) {
+  const { cardRect, scale } = coverGeometry;
+  return `translate(${x - cardRect.left}px, ${y - cardRect.top}px) scale(${scale})`;
+}
+
+function animateOpening(element, keyframes, options) {
+  const animation = element.animate(keyframes, { fill: 'forwards', ...options });
+  openingAnimations.add(animation);
+  // Cancellation by skip, resize or bfcache is a normal exit, not an unhandled rejection.
+  return animation.finished.catch(() => {});
+}
+
+function cancelOpeningAnimations() {
+  window.clearTimeout(openingFallback);
+  openingAnimations.forEach((animation) => animation.cancel());
+  openingAnimations.clear();
+}
+
+function finishOpening() {
+  if (opening.hidden) return;
+  openingRun += 1;
+  opening.hidden = true;
+  cancelOpeningAnimations();
+  restoreCover();
+  opening.dataset.state = 'complete';
+  opening.classList.remove('is-settling');
+  root.classList.remove('intro-active', 'intro-revealing');
+  invitation.inert = false;
+  invitation.focus({ preventScroll: true });
+  lineAnimator?.measureVisibility();
+}
+
+async function openExperience() {
   if (opening.dataset.state !== 'idle') return;
-
+  const run = ++openingRun;
   opening.dataset.state = 'opening';
-  openSeal.setAttribute('aria-expanded', 'true');
-  openSeal.blur();
-  envelopeScene.style.transform = '';
+  seal.setAttribute('aria-expanded', 'true');
+  seal.blur();
+  // Called synchronously in the user's gesture so browser audio policies are respected.
   requestSoundtrack();
-
-  if (reducedMotion.matches) {
-    opening.classList.add('is-opening');
-    revealInvitation({ immediate: true });
+  if (reducedMotion.matches || typeof cover.animate !== 'function') {
+    finishOpening();
     return;
   }
-
-  let letterFinished = false;
-  const finishLetter = () => {
-    if (letterFinished) return;
-    letterFinished = true;
-    window.clearTimeout(openingFallback);
-    letterPreview.removeEventListener('transitionend', onLetterTransitionEnd);
-    revealInvitation();
-  };
-
-  const onLetterTransitionEnd = (event) => {
-    if (event.target === letterPreview && event.propertyName === 'transform') {
-      finishLetter();
+  openingFallback = window.setTimeout(finishOpening, 4500);
+  try {
+    if (document.fonts && document.fonts.status !== 'loaded') {
+      await document.fonts.ready;
     }
-  };
-
-  letterPreview.addEventListener('transitionend', onLetterTransitionEnd);
-  openingFallback = window.setTimeout(finishLetter, 1900);
-  requestAnimationFrame(() => opening.classList.add('is-opening'));
+    if (run !== openingRun) return;
+    if (!placeCoverInEnvelope()) return finishOpening();
+    const flap = $('.envelope__flap');
+    const ease = 'cubic-bezier(0.22, 0.68, 0.2, 1)';
+    animateOpening(seal, [{ opacity: 1 }, { opacity: 0 }], { duration: 180 });
+    animateOpening($('.opening__copy'), [{ opacity: 1 }, { opacity: 0 }], { duration: 200 });
+    animateOpening($('.opening__hint'), [{ opacity: 1 }, { opacity: 0 }], { duration: 200 });
+    // The closed flap and pocket conceal the paper; opening the flap uncovers it naturally.
+    cover.style.visibility = 'visible';
+    await animateOpening(flap, [
+      { transform: 'perspective(1000px) rotateX(0deg)' },
+      { transform: 'perspective(1000px) rotateX(-180deg)' },
+    ], { duration: 500, easing: 'ease-in-out' });
+    if (run !== openingRun) return;
+    flap.style.zIndex = '2';
+    const { cardX, cardY, top } = coverGeometry;
+    const emerged = coverTransform(cardX, cardY - Math.min(90, coverGeometry.height * 0.2));
+    const drop = window.innerHeight - top + 120;
+    for (const layer of document.querySelectorAll('.envelope-layer')) {
+      const rotation = layer === flap ? ' perspective(1000px) rotateX(-180deg)' : '';
+      animateOpening(layer, [
+        { transform: `translateY(0px)${rotation}` },
+        { transform: `translateY(${drop}px)${rotation}` },
+      ], { duration: 780, easing: ease });
+    }
+    await animateOpening(cover, [
+      { transform: coverTransform(cardX, cardY) },
+      { transform: emerged },
+    ], { duration: 780, easing: ease });
+    if (run !== openingRun) return;
+    root.classList.add('intro-revealing');
+    opening.classList.add('is-settling');
+    animateOpening($('.opening__top'), [{ opacity: 1 }, { opacity: 0 }], { duration: 250 });
+    await animateOpening(cover, [
+      { transform: emerged },
+      { transform: 'translate(0px, 0px) scale(1)' },
+    ], { duration: 650, easing: ease });
+    if (run === openingRun) finishOpening();
+  } catch {
+    if (run === openingRun) finishOpening();
+  }
 }
 
 function skipExperience() {
-  if (opening.dataset.state === 'complete') return;
+  if (opening.hidden) return;
   requestSoundtrack();
-  opening.classList.add('is-opening');
-  revealInvitation({ immediate: true });
+  finishOpening();
+}
+
+function resetOpening() {
+  openingRun += 1;
+  cancelOpeningAnimations();
+  restoreCover();
+  opening.hidden = false;
+  opening.dataset.state = 'idle';
+  opening.classList.remove('is-settling');
+  $('.envelope__flap').style.zIndex = '';
+  seal.setAttribute('aria-expanded', 'false');
+  if (dressDialog.open) dressDialog.close();
+  root.classList.remove('intro-revealing', 'dialog-active');
+  root.classList.add('intro-active');
+  invitation.inert = true;
+  window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+  resetSoundtrack();
+  lineAnimator?.reset();
+  if (!placeCoverInEnvelope()) finishOpening();
 }
 
 function trapOpeningFocus(event) {
-  if (event.key !== 'Tab' || opening.hidden || opening.dataset.state !== 'idle') return;
-
-  const focusable = [skipToInvitation, skipOpening, openSeal];
-  const currentIndex = focusable.indexOf(document.activeElement);
-
-  if (event.shiftKey && currentIndex <= 0) {
-    event.preventDefault();
-    focusable.at(-1).focus();
-  } else if (!event.shiftKey && currentIndex === focusable.length - 1) {
-    event.preventDefault();
-    focusable[0].focus();
-  }
-}
-
-function handleSkipLink(event) {
   if (opening.hidden) return;
-
-  event.preventDefault();
-  skipExperience();
-}
-
-function moveEnvelope(event) {
-  if (reducedMotion.matches || opening.dataset.state !== 'idle' || event.pointerType === 'touch') return;
-
-  const x = (event.clientX / window.innerWidth - 0.5) * 8;
-  const y = (event.clientY / window.innerHeight - 0.5) * 5;
-  envelopeScene.style.transform = `translate(calc(-50% + ${x}px), calc(-50% + ${y}px))`;
-}
-
-function resetEnvelopePosition() {
-  if (opening.dataset.state === 'idle') envelopeScene.style.transform = '';
+  if (event.key === 'Escape') {
+    event.preventDefault();
+    skipExperience();
+  }
+  if (event.key !== 'Tab') return;
+  const items = opening.dataset.state === 'idle' ? [skipOpening, seal] : [skipOpening];
+  const index = items.indexOf(document.activeElement);
+  if (event.shiftKey && index <= 0) {
+    event.preventDefault();
+    items.at(-1).focus();
+  } else if (!event.shiftKey && (index === -1 || index === items.length - 1)) {
+    event.preventDefault();
+    items[0].focus();
+  }
 }
 
 function escapeIcsText(value) {
@@ -235,20 +363,12 @@ function escapeIcsText(value) {
 
 function downloadCalendarEvent() {
   const lines = [
-    'BEGIN:VCALENDAR',
-    'VERSION:2.0',
-    'PRODID:-//Caele//ENMH 2027//ES',
-    'CALSCALE:GREGORIAN',
-    'BEGIN:VEVENT',
+    'BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//Caele//ENMH 2027//ES', 'CALSCALE:GREGORIAN', 'BEGIN:VEVENT',
     `UID:enmh-2027-${EVENT.startDate}@caele.mx`,
     `DTSTAMP:${new Date().toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, '')}`,
-    `DTSTART;VALUE=DATE:${EVENT.startDate}`,
-    `DTEND;VALUE=DATE:${EVENT.endDate}`,
-    `SUMMARY:${escapeIcsText(EVENT.name)}`,
-    `LOCATION:${escapeIcsText(EVENT.location)}`,
-    `DESCRIPTION:${escapeIcsText(EVENT.description)}`,
-    'END:VEVENT',
-    'END:VCALENDAR',
+    `DTSTART;VALUE=DATE:${EVENT.startDate}`, `DTEND;VALUE=DATE:${EVENT.endDate}`,
+    `SUMMARY:${escapeIcsText(EVENT.name)}`, `LOCATION:${escapeIcsText(EVENT.location)}`,
+    `DESCRIPTION:${escapeIcsText(EVENT.description)}`, 'END:VEVENT', 'END:VCALENDAR', '',
   ];
   const blob = new Blob([lines.join('\r\n')], { type: 'text/calendar;charset=utf-8' });
   const url = URL.createObjectURL(blob);
@@ -258,133 +378,91 @@ function downloadCalendarEvent() {
   document.body.append(link);
   link.click();
   link.remove();
-  URL.revokeObjectURL(url);
+  window.setTimeout(() => URL.revokeObjectURL(url), 1000);
   showToast('Fecha guardada: 22 de mayo de 2027.');
 }
 
-function showToast(message) {
-  window.clearTimeout(toastTimer);
-  toast.textContent = message;
-  toast.classList.add('is-visible');
-  toastTimer = window.setTimeout(() => toast.classList.remove('is-visible'), 2600);
-}
-
 async function share() {
-  const shareData = {
+  const data = {
     title: EVENT.name,
     text: 'Sábado 22 de mayo de 2027 · Jardín Volterra, Zona Esmeralda.',
     url: window.location.href.split('#')[0],
   };
-
   if (navigator.share) {
-    try {
-      await navigator.share(shareData);
-      return;
-    } catch (error) {
-      if (error.name === 'AbortError') return;
-    }
+    try { await navigator.share(data); return; }
+    catch (error) { if (error.name === 'AbortError') return; }
   }
-
   try {
-    await navigator.clipboard.writeText(shareData.url);
+    await navigator.clipboard.writeText(data.url);
     showToast('Enlace copiado.');
   } catch {
     showToast('Copia la dirección de esta página para compartirla.');
   }
 }
 
-function toggleSoundtrack() {
-  if (soundtrackUnavailable || eventAudio.error) {
-    showToast('La canción todavía no está disponible.');
-    return;
-  }
-
-  if (eventAudio.paused) {
-    soundtrackRequested = true;
-    loadSoundtrack();
-    const playRequest = eventAudio.play();
-    if (playRequest) playRequest.catch(() => showToast('La canción todavía no está disponible.'));
-    return;
-  }
-
-  eventAudio.pause();
-}
-
 function updateCountdown() {
   const remaining = Math.max(0, EVENT_START - Date.now());
-  const totalSeconds = Math.floor(remaining / 1000);
-  const days = Math.floor(totalSeconds / 86400);
-  const hours = Math.floor((totalSeconds % 86400) / 3600);
-  const minutes = Math.floor((totalSeconds % 3600) / 60);
-  const seconds = totalSeconds % 60;
-
-  countdownUnits.days.textContent = String(days).padStart(3, '0');
-  countdownUnits.hours.textContent = String(hours).padStart(2, '0');
-  countdownUnits.minutes.textContent = String(minutes).padStart(2, '0');
-  countdownUnits.seconds.textContent = String(seconds).padStart(2, '0');
-
-  if (remaining === 0) {
-    countdown.classList.add('is-complete');
-    countdownStatus.textContent = 'Hoy celebramos la graduación.';
+  const minutes = Math.floor(remaining / 60000);
+  $('[data-countdown-days]').textContent = String(Math.floor(minutes / 1440)).padStart(3, '0');
+  $('[data-countdown-hours]').textContent = String(Math.floor(minutes % 1440 / 60)).padStart(2, '0');
+  $('[data-countdown-minutes]').textContent = String(minutes % 60).padStart(2, '0');
+  if (!remaining && !$('#countdown').classList.contains('is-complete')) {
+    $('#countdown').classList.add('is-complete');
+    $('#countdownStatus').textContent = 'Llegó el día. Hoy celebramos.';
   }
 }
 
-function openDressCodeDetails() {
-  if (typeof dressDetailsDialog.showModal === 'function') {
-    dressDetailsDialog.showModal();
-  } else {
-    dressDetailsDialog.setAttribute('open', '');
-  }
-  document.documentElement.classList.add('dialog-active');
-}
-
-function closeDressCodeDetails() {
-  document.documentElement.classList.remove('dialog-active');
-}
-
-function closeDressCodeFromBackdrop(event) {
-  if (event.target !== dressDetailsDialog) return;
-
-  const bounds = dressDetailsDialog.getBoundingClientRect();
-  const isInside =
-    event.clientX >= bounds.left &&
-    event.clientX <= bounds.right &&
-    event.clientY >= bounds.top &&
-    event.clientY <= bounds.bottom;
-
-  if (!isInside) dressDetailsDialog.close();
-}
-
-openSeal.addEventListener('click', openExperience);
+seal.addEventListener('click', openExperience);
 skipOpening.addEventListener('click', skipExperience);
-skipToInvitation.addEventListener('click', handleSkipLink);
-opening.addEventListener('keydown', trapOpeningFocus);
-opening.addEventListener('pointermove', moveEnvelope);
-opening.addEventListener('pointerleave', resetEnvelopePosition);
-addCalendar.addEventListener('click', downloadCalendarEvent);
-shareInvitation.addEventListener('click', share);
+$('#skipToInvitation').addEventListener('click', (event) => {
+  if (!opening.hidden) { event.preventDefault(); skipExperience(); }
+});
+document.addEventListener('keydown', trapOpeningFocus);
+$('#addCalendar').addEventListener('click', downloadCalendarEvent);
+$('#shareInvitation').addEventListener('click', share);
 musicToggle.addEventListener('click', toggleSoundtrack);
-openDressDetails.addEventListener('click', openDressCodeDetails);
-dressDetailsDialog.addEventListener('close', closeDressCodeDetails);
-dressDetailsDialog.addEventListener('click', closeDressCodeFromBackdrop);
-eventAudio.addEventListener('play', syncMusicPlayer);
-eventAudio.addEventListener('pause', syncMusicPlayer);
-eventAudio.addEventListener('error', () => {
-  soundtrackUnavailable = true;
-  syncMusicPlayer();
+for (const name of ['play', 'pause', 'ended']) audio.addEventListener(name, syncMusicPlayer);
+audio.addEventListener('error', () => { soundtrackUnavailable = true; syncMusicPlayer(); });
+$('#openDressDetails').addEventListener('click', () => {
+  dressDialog.showModal();
+  root.classList.add('dialog-active');
+  lineAnimator.sync();
 });
-
+dressDialog.addEventListener('close', () => {
+  root.classList.remove('dialog-active');
+  lineAnimator.sync();
+});
+dressDialog.addEventListener('click', (event) => {
+  if (event.target !== dressDialog) return;
+  const rect = dressDialog.getBoundingClientRect();
+  if (event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom) dressDialog.close();
+});
+reducedMotion.addEventListener('change', () => {
+  if (reducedMotion.matches && opening.dataset.state === 'opening') finishOpening();
+  lineAnimator.sync();
+});
+let resizeFrame;
+window.addEventListener('resize', () => {
+  cancelAnimationFrame(resizeFrame);
+  resizeFrame = requestAnimationFrame(() => {
+    if (opening.dataset.state === 'opening') finishOpening();
+    else if (!opening.hidden) placeCoverInEnvelope();
+    lineAnimator.measureVisibility();
+  });
+});
 window.addEventListener('pageshow', (event) => {
-  if (location.hash) {
-    history.replaceState(null, '', location.pathname + location.search);
-  }
-  if (event.persisted) {
-    resetOpening();
-  } else {
-    forceScrollTop();
-  }
+  if (location.hash) history.replaceState(null, '', location.pathname + location.search);
+  if (event.persisted) resetOpening();
 });
+window.addEventListener('beforeprint', finishOpening);
 
+lineAnimator = createLineAnimator();
 updateCountdown();
 window.setInterval(updateCountdown, 1000);
 resetOpening();
+if (document.fonts) {
+  document.fonts.ready.then(() => {
+    if (opening.dataset.state === 'idle') placeCoverInEnvelope();
+  });
+}
+window.clearTimeout(window.enmhBootGuard);
