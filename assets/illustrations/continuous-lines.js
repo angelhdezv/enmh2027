@@ -62,8 +62,20 @@ const ENMH_ART = (() => {
     const height = card.height * scale / 0.95;
     const left = stage.left + (stage.width - width) / 2;
     const top = stage.top + (stage.height - height) / 2;
-    return { width, height, left, top, scale, cardX: left + width * 0.03, cardY: top + height * 0.025 };
+    return { width, height, left, top, scale, flapHeight: height * 0.5, cardX: left + width * 0.03, cardY: top + height * 0.025 };
   }
 
-  return Object.freeze({ drawings, timing, duration, scenes, frameAt, envelopeLayout });
+  // Map the document's scroll position to the line, in both directions.
+  // Cap the end at the page's maximum scroll so the last segment can always finish.
+  function timelineProgress({ scrollY, viewportHeight, pageHeight, start, end }) {
+    const maxScroll = Math.max(0, pageHeight - viewportHeight);
+    if (maxScroll === 0 || end <= start) return 1;
+    const guide = viewportHeight * 0.8;
+    const from = Math.min(start - guide, maxScroll);
+    const to = Math.min(end - guide, maxScroll);
+    if (to <= from) return scrollY >= to ? 1 : 0;
+    return Math.max(0, Math.min(1, (scrollY - from) / (to - from)));
+  }
+
+  return Object.freeze({ drawings, timing, duration, scenes, frameAt, envelopeLayout, timelineProgress });
 })();

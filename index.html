@@ -13,7 +13,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,500&amp;family=Noto+Sans:wght@400;500;600&amp;display=swap" rel="stylesheet">
     <link rel="icon" href="assets/monograma-enmh.svg" type="image/svg+xml">
-    <link rel="stylesheet" href="styles.css?v=0.1.0">
+    <link rel="stylesheet" href="styles.css?v=0.1.0.1">
     <script>
       document.documentElement.classList.add('js', 'intro-active');
       if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
@@ -36,8 +36,8 @@
         if (invitation) invitation.inert = false;
       }, 8000);
     </script>
-    <script src="assets/illustrations/continuous-lines.js?v=0.1.0" defer></script>
-    <script src="script.js?v=0.1.0" defer></script>
+    <script src="assets/illustrations/continuous-lines.js?v=0.1.0.1" defer></script>
+    <script src="script.js?v=0.1.0.1" defer></script>
   </head>
   <body>
     <a class="skip-link" id="skipToInvitation" href="#invitacion">Ir a la invitación</a>
@@ -71,7 +71,7 @@
         <div class="envelope__flap envelope-layer" aria-hidden="true"></div>
         <div class="envelope__front envelope-layer" aria-hidden="true"></div>
         <button class="wax-seal" id="openSeal" type="button" aria-label="Abrir la invitación" aria-expanded="false">
-          <span aria-hidden="true">ENMH</span>
+          <img class="wax-seal__crest" src="assets/enmh-escudo.png" alt="" width="42" height="50">
         </button>
       </div>
       <p class="opening__hint">Toca el sello para abrir</p>
@@ -81,7 +81,7 @@
       <article class="paper">
         <header class="paper__header">
           <a class="lockup" href="#invitacion" aria-label="Inicio de la invitación, ENMH · IPN">
-            <img src="assets/enmh-escudo.jpg" alt="" width="28" height="35">
+            <img src="assets/enmh-escudo.png" alt="" width="28" height="35">
             <span>ENMH · IPN</span>
           </a>
           <span class="header__generation">Generación 2027</span>
@@ -98,8 +98,8 @@
                 </svg>
               </button>
             </div>
-            <button class="utility-button motion-toggle" id="motionToggle" type="button" aria-label="Pausar ilustraciones" aria-pressed="false" title="Pausar ilustraciones">
-              <svg aria-hidden="true"><use href="#icon-pause"></use></svg>
+            <button class="utility-button music-playback-toggle" id="musicPlaybackToggle" type="button" aria-label="Reproducir canción" aria-pressed="false" title="Reproducir canción">
+              <svg aria-hidden="true"><use href="#icon-play"></use></svg>
             </button>
             <button class="utility-button" id="shareInvitation" type="button" aria-label="Compartir invitación" title="Compartir invitación">
               <svg aria-hidden="true"><use href="#icon-share"></use></svg><span class="utility-button__label">Compartir</span>
@@ -145,7 +145,7 @@
             <p class="eyebrow">Programa preliminar</p>
             <h2 id="program-title">Itinerario</h2>
             <p class="section-note">Horarios sujetos a confirmación.</p>
-            <ol class="timeline">
+            <ol class="timeline" id="itineraryTimeline">
               <li><time datetime="17:30">17:30</time><div><h3>Recepción</h3><p>Registro de invitados · Vestíbulo</p></div></li>
               <li><time datetime="18:00">18:00</time><div><h3>Ceremonia</h3><p>Toma de protesta y entrega de títulos</p></div></li>
               <li><time datetime="19:15">19:15</time><div><h3>Fotografías</h3><p>Sesión con familia · Jardín de los Cedros</p></div></li>

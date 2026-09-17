@@ -59,11 +59,28 @@ test('the real cover fits the envelope with uniform scale at mobile and desktop 
     const layout = art.envelopeLayout(card, stage);
     assert.ok(layout.scale > 0 && layout.scale < 1);
     assert.ok(layout.width <= stageWidth && layout.height <= stageHeight);
+    assert.equal(layout.flapHeight, layout.height / 2, 'The flap tip and seal stay centered');
     assert.ok(layout.cardX >= layout.left && layout.cardY >= layout.top);
     assert.ok(layout.cardX + width * layout.scale <= layout.left + layout.width);
     assert.ok(layout.cardY + height * layout.scale <= layout.top + layout.height);
     assert.equal((width * layout.scale) / (height * layout.scale), width / height);
   }
+});
+
+test('the itinerary line follows scroll down and erases on scroll up', () => {
+  const geometry = { viewportHeight: 800, pageHeight: 2200, start: 1000, end: 1400 };
+  for (const [scrollY, expected] of [[0, 0], [360, 0], [560, 0.5], [760, 1], [900, 1], [560, 0.5], [360, 0]]) {
+    assert.equal(art.timelineProgress({ ...geometry, scrollY }), expected);
+  }
+});
+
+test('the itinerary completes at the bottom without a last-frame jump', () => {
+  const geometry = { viewportHeight: 900, pageHeight: 1500, start: 950, end: 1400 };
+  assert.equal(art.timelineProgress({ ...geometry, scrollY: 600 }), 1);
+  const nearEnd = art.timelineProgress({ ...geometry, scrollY: 599 });
+  assert.ok(nearEnd > 0.99 && nearEnd < 1);
+  assert.ok(art.timelineProgress({ ...geometry, scrollY: 300 }) < nearEnd);
+  assert.equal(art.timelineProgress({ ...geometry, pageHeight: 800, scrollY: 0 }), 1);
 });
 
 test('the original song and footer SVG remain byte-for-byte unchanged', () => {

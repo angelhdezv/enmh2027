@@ -21,7 +21,7 @@ const skipOpening = $('#skipOpening');
 const audio = $('#eventAudio');
 const musicPlayer = $('#musicPlayer');
 const musicToggle = $('#musicToggle');
-const motionToggle = $('#motionToggle');
+const musicPlaybackToggle = $('#musicPlaybackToggle');
 const dressDialog = $('#dressDetailsDialog');
 const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 let openingRun = 0;
@@ -31,6 +31,7 @@ let toastTimer;
 let soundtrackRequested = false;
 let soundtrackUnavailable = false;
 let lineAnimator;
+let timelineAnimator;
 const openingAnimations = new Set();
 
 function showToast(message) {
@@ -45,9 +46,12 @@ function syncMusicPlayer() {
   const label = unavailable ? 'La canción no está disponible' : audio.paused ? 'Reproducir canción' : 'Pausar canción';
   musicPlayer.classList.toggle('is-paused', audio.paused);
   musicPlayer.classList.toggle('is-unavailable', unavailable);
-  musicToggle.setAttribute('aria-label', label);
-  musicToggle.setAttribute('title', label);
-  musicToggle.setAttribute('aria-pressed', String(!audio.paused));
+  for (const control of [musicToggle, musicPlaybackToggle]) {
+    control.setAttribute('aria-label', label);
+    control.setAttribute('title', label);
+    control.setAttribute('aria-pressed', String(!audio.paused));
+  }
+  musicPlaybackToggle.querySelector('use').setAttribute('href', audio.paused ? '#icon-play' : '#icon-pause');
 }
 
 function playSoundtrack() {
@@ -89,7 +93,6 @@ function resetSoundtrack() {
 
 function createLineAnimator() {
   let frameRequest = 0;
-  let manuallyPaused = false;
   const groups = Array.from(document.querySelectorAll('[data-line-scene]'), (element) => ({
     element,
     path: element.querySelector('[data-line-path]'),
@@ -112,7 +115,7 @@ function createLineAnimator() {
   }
 
   function canRun() {
-    return opening.hidden && !document.hidden && !dressDialog.open && !reducedMotion.matches && !manuallyPaused;
+    return opening.hidden && !document.hidden && !dressDialog.open && !reducedMotion.matches;
   }
 
   function tick(now) {
@@ -160,15 +163,6 @@ function createLineAnimator() {
   }
 
   document.addEventListener('visibilitychange', sync);
-  motionToggle.addEventListener('click', () => {
-    manuallyPaused = !manuallyPaused;
-    const label = manuallyPaused ? 'Reanudar ilustraciones' : 'Pausar ilustraciones';
-    motionToggle.setAttribute('aria-pressed', String(manuallyPaused));
-    motionToggle.setAttribute('aria-label', label);
-    motionToggle.setAttribute('title', label);
-    motionToggle.querySelector('use').setAttribute('href', manuallyPaused ? '#icon-play' : '#icon-pause');
-    sync();
-  });
 
   return {
     sync,
@@ -181,6 +175,50 @@ function createLineAnimator() {
       sync();
     },
   };
+}
+
+function createTimelineAnimator() {
+  const timeline = $('#itineraryTimeline');
+  const items = timeline.querySelectorAll('li');
+  let frameRequest = 0;
+
+  function measure() {
+    cancelAnimationFrame(frameRequest);
+    frameRequest = 0;
+    if (!opening.hidden || document.hidden || items.length < 2) return;
+    const bounds = timeline.getBoundingClientRect();
+    const dotCenter = parseFloat(getComputedStyle(timeline).getPropertyValue('--timeline-dot-center')) || 10.5;
+    const first = items[0].getBoundingClientRect().top + dotCenter;
+    const last = items[items.length - 1].getBoundingClientRect().top + dotCenter;
+    const scrollY = window.scrollY;
+    const progress = reducedMotion.matches ? 1 : ENMH_ART.timelineProgress({
+      scrollY,
+      viewportHeight: window.innerHeight,
+      pageHeight: root.scrollHeight,
+      start: first + scrollY,
+      end: last + scrollY,
+    });
+    timeline.style.setProperty('--timeline-start', `${first - bounds.top}px`);
+    timeline.style.setProperty('--timeline-length', `${Math.max(0, last - first)}px`);
+    timeline.style.setProperty('--timeline-progress', String(progress));
+    timeline.classList.add('is-scroll-linked');
+  }
+
+  function schedule() {
+    if (!opening.hidden || document.hidden) {
+      cancelAnimationFrame(frameRequest);
+      frameRequest = 0;
+      return;
+    }
+    if (!frameRequest) frameRequest = requestAnimationFrame(measure);
+  }
+
+  window.addEventListener('scroll', schedule, { passive: true });
+  window.addEventListener('resize', schedule);
+  document.addEventListener('visibilitychange', schedule);
+  if ('ResizeObserver' in window) new ResizeObserver(schedule).observe(timeline);
+  if (document.fonts) document.fonts.ready.then(schedule);
+  return { measure };
 }
 
 function restoreCover() {
@@ -205,7 +243,7 @@ function placeCoverInEnvelope() {
     '--envelope-top': layout.top,
     '--envelope-width': layout.width,
     '--envelope-height': layout.height,
-    '--flap-height': Math.min(layout.width * 0.48, layout.height * 0.56),
+    '--flap-height': layout.flapHeight,
   };
   for (const [name, value] of Object.entries(properties)) opening.style.setProperty(name, `${value}px`);
   coverSlot.style.height = `${cardRect.height}px`;
@@ -252,6 +290,7 @@ function finishOpening() {
   invitation.inert = false;
   invitation.focus({ preventScroll: true });
   lineAnimator?.measureVisibility();
+  timelineAnimator?.measure();
 }
 
 async function openExperience() {
@@ -421,6 +460,7 @@ document.addEventListener('keydown', trapOpeningFocus);
 $('#addCalendar').addEventListener('click', downloadCalendarEvent);
 $('#shareInvitation').addEventListener('click', share);
 musicToggle.addEventListener('click', toggleSoundtrack);
+musicPlaybackToggle.addEventListener('click', toggleSoundtrack);
 for (const name of ['play', 'pause', 'ended']) audio.addEventListener(name, syncMusicPlayer);
 audio.addEventListener('error', () => { soundtrackUnavailable = true; syncMusicPlayer(); });
 $('#openDressDetails').addEventListener('click', () => {
@@ -440,6 +480,7 @@ dressDialog.addEventListener('click', (event) => {
 reducedMotion.addEventListener('change', () => {
   if (reducedMotion.matches && opening.dataset.state === 'opening') finishOpening();
   lineAnimator.sync();
+  timelineAnimator.measure();
 });
 let resizeFrame;
 window.addEventListener('resize', () => {
@@ -457,6 +498,7 @@ window.addEventListener('pageshow', (event) => {
 window.addEventListener('beforeprint', finishOpening);
 
 lineAnimator = createLineAnimator();
+timelineAnimator = createTimelineAnimator();
 updateCountdown();
 window.setInterval(updateCountdown, 1000);
 resetOpening();
