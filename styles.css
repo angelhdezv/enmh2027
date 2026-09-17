@@ -122,8 +122,8 @@ html:not(.js) .paper__tools, html:not(.js) #addCalendar, html:not(.js) #openDres
 .footer__brand:hover { transform: scale(1.03); }
 .footer__brand img { inline-size: 100%; block-size: auto; }
 
-/* Matte folded paper. All layers share a coordinate space with the real cover. */
-.opening { display: none; }
+/* Matte stationery. Every physical layer still shares the real cover's coordinates. */
+.opening { --envelope-grain: url('assets/textures/paper-fiber.svg'); display: none; }
 .js .opening { position: fixed; inset: 0; z-index: 100; display: grid; grid-template-rows: auto auto minmax(0, 1fr) auto; gap: clamp(16px, 2.7svh, 28px); width: 100%; height: 100svh; padding: clamp(20px, 3.5vw, 36px); color: var(--paper); isolation: isolate; overflow: hidden; }
 .opening::before { content: ''; position: absolute; inset: 0; z-index: 0; background: #641d3b; opacity: 1; transition: opacity 650ms ease; }
 .opening__top { display: flex; align-items: center; justify-content: space-between; position: relative; z-index: 7; }
@@ -134,12 +134,98 @@ html:not(.js) .paper__tools, html:not(.js) #addCalendar, html:not(.js) #openDres
 .opening__copy { position: relative; z-index: 7; align-self: center; text-align: center; pointer-events: none; }
 .opening__copy h1 { font-size: clamp(39px, 6.2svh, 62px); line-height: .98; letter-spacing: -.025em; }
 .envelope-stage { min-height: 0; }
-.envelope-layer { position: absolute; left: var(--envelope-left, 20%); top: var(--envelope-top, 48%); width: var(--envelope-width, 60%); height: var(--envelope-height, 38%); }
-.envelope__back { z-index: 1; background: #51152f; box-shadow: 0 12px 28px #310e211f; }
-.envelope__front { z-index: 4; background: #7a2b49; clip-path: polygon(0 0, 50% var(--flap-height, 45%), 100% 0, 100% 100%, 0 100%); }
-.envelope__flap { z-index: 5; height: var(--flap-height, 25%); background: #8b3855; clip-path: polygon(0 0, 100% 0, 50% 100%); transform-origin: 50% 0; backface-visibility: visible; }
-.wax-seal { position: absolute; z-index: 6; left: calc(var(--envelope-left, 20%) + var(--envelope-width, 60%) / 2); top: calc(var(--envelope-top, 48%) + var(--flap-height, 22%)); transform: translate(-50%, -50%); display: grid; place-items: center; width: 65px; height: 65px; padding: 0; color: #f4ead5; background: #6c213e; border: 2px solid #eee1c8; border-radius: 50%; box-shadow: 0 2px 6px #3910221a; font-family: var(--serif); font-size: 18px; transition: background 180ms ease; }
-.wax-seal:hover { background: #561830; }
+.envelope-layer {
+  position: absolute;
+  left: var(--envelope-left, 20%);
+  top: var(--envelope-top, 48%);
+  width: var(--envelope-width, 60%);
+  height: var(--envelope-height, 38%);
+  border-radius: 2px;
+}
+.envelope__back, .envelope__front, .envelope__flap::after, .wax-seal {
+  background-image: var(--envelope-grain), var(--envelope-tone);
+  background-size: 144px 144px, 100% 100%;
+  background-repeat: repeat, no-repeat;
+}
+.envelope__back {
+  --envelope-tone: linear-gradient(180deg, #4c192d, #622338 28%, #602136);
+  z-index: 1;
+  background-color: #562034;
+  box-shadow:
+    0 1px 2px #270c1a52,
+    0 9px 20px -5px #290d1c52,
+    0 26px 46px -18px #2609174d,
+    inset 0 1px 0 #ae718344;
+}
+.envelope__front {
+  --envelope-tone: linear-gradient(110deg, #793048, #752a43 58%, #6b233c);
+  z-index: 4;
+  background-color: #752a43;
+  clip-path: polygon(0 0, 50% var(--flap-height, 45%), 100% 0, 100% 100%, 0 100%);
+  box-shadow:
+    inset 1px 0 0 #b9798b38,
+    inset -1px 0 0 #3a112a4d,
+    inset 0 -1px 0 #35102580,
+    inset 0 -3px 0 #ad6e801f;
+}
+/* The unclipped wrapper lets the flap cast a shadow over the smooth pocket. */
+.envelope__flap {
+  z-index: 5;
+  height: var(--flap-height, 25%);
+  transform-origin: 50% 0;
+  backface-visibility: visible;
+  filter: drop-shadow(0 1px 1px #30101f55) drop-shadow(0 6px 5px #2b0c1c38);
+}
+.envelope__flap::before, .envelope__flap::after {
+  content: '';
+  position: absolute;
+  border-radius: 2px 2px 0 0;
+  clip-path: polygon(0 0, 100% 0, 50.7% 99.5%, 50% 100%, 49.3% 99.5%);
+}
+.envelope__flap::before {
+  inset: 0;
+  background: #a36579;
+}
+.envelope__flap::after {
+  --envelope-tone: linear-gradient(155deg, #893d55, #81334d 58%, #762c45);
+  inset: 1px 1px 1.5px;
+  background-color: #81334d;
+  box-shadow: inset 0 1px 0 #b67c8c30;
+}
+.wax-seal {
+  --envelope-tone: linear-gradient(145deg, #702c44, #602238 65%, #571d32);
+  position: absolute;
+  z-index: 6;
+  left: calc(var(--envelope-left, 20%) + var(--envelope-width, 60%) / 2);
+  top: calc(var(--envelope-top, 48%) + var(--flap-height, 22%));
+  transform: translate(-50%, -50%);
+  display: grid;
+  place-items: center;
+  width: 65px;
+  height: 65px;
+  padding: 0;
+  color: #f4ead5;
+  background-color: #63243a;
+  border: 1px solid #d2b995b3;
+  border-radius: 49% 51% 48% 52% / 52% 48% 51% 49%;
+  box-shadow:
+    0 2px 3px #2b0b1e5c,
+    0 5px 10px #2d0b1d40,
+    inset 0 0 0 3px #52203566;
+  font-family: var(--serif);
+  font-size: 18px;
+  transition: box-shadow 180ms ease, border-color 180ms ease;
+}
+.wax-seal::before {
+  content: '';
+  position: absolute;
+  inset: 5px;
+  border: 1px solid #bb907442;
+  border-radius: 50%;
+  pointer-events: none;
+}
+.wax-seal:hover { border-color: #e0cbaba6; box-shadow: 0 3px 4px #2b0b1e5c, 0 7px 12px #2d0b1d40, inset 0 0 0 3px #52203566; }
+.wax-seal:active { box-shadow: 0 1px 2px #2b0b1e5c, 0 2px 5px #2d0b1d33, inset 0 0 0 3px #52203566; }
 .wax-seal__crest { display: block; width: 42px; height: 50px; object-fit: contain; }
 .opening__hint { position: relative; z-index: 7; align-self: end; text-align: center; font-size: 12px; letter-spacing: .1em; }
 .cover.is-travelling { position: fixed; z-index: 3; margin: 0; transform-origin: 0 0; will-change: transform; color: var(--ink); box-shadow: 0 2px 12px #36102314; }

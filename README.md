@@ -4,7 +4,7 @@ Invitación digital para la Generación 2027 de **Médico Cirujano y Homeópata*
 
 ## Concepto
 
-La experiencia comienza con un sobre guinda mate y un sello con el escudo de la escuela. La cara del sobre es lisa y la pestaña cierra en su centro. La **misma portada del documento** sale del sobre y se coloca en su posición final: conserva contenido, tipografía y proporciones durante toda la apertura. No se intercambia por una miniatura ni por una imagen.
+La experiencia comienza con un sobre de cartulina guinda y un sello de lacre mate con el escudo blanco de la escuela. El grano fino del papel, el borde de la pestaña y las sombras de contacto dan profundidad al sobre; la cara conserva una superficie continua y la pestaña cierra en su centro. La **misma portada del documento** sale del sobre y se coloca en su posición final: conserva contenido, tipografía y proporciones durante toda la apertura. No se intercambia por una miniatura ni por una imagen.
 
 La versión `v0.1.0` usa una superficie marfil, tipografía editorial y dibujos de una sola línea. La portada ocupa todo el ancho; después aparecen la cuenta regresiva y dos columnas para itinerario, vestimenta y boleto. En móvil el contenido se organiza en una sola columna.
 
@@ -16,7 +16,7 @@ Cada ilustración se dibuja durante **2 segundos**, permanece completa **1 segun
 
 La tarjeta lleva el primer dibujo completo durante la apertura; al llegar a su lugar, continúa desde la pausa visible de un segundo. Los siguientes ciclos recorren las tres fases completas. Las animaciones se pausan fuera de pantalla, al ocultar la pestaña o al abrir la guía de vestimenta. Con movimiento reducido, las ilustraciones permanecen estáticas y la apertura es inmediata.
 
-Los trazos son SVG editables, sin fotografías generadas ni texturas añadidas. El escudo transparente del encabezado y del sello proviene del [PNG del sitio oficial de la ENMH](https://www.enmh.ipn.mx/assets/files/enmh/img/enmh.png), conservado sin modificar. La canción y el SVG original del footer de Caele.mx se conservan.
+Los trazos son SVG editables. El sobre utiliza una textura SVG ligera y estática de grano de papel. Se conservan los archivos de los escudos aportados al proyecto, incluida la versión blanca del sello, la canción y el SVG original del footer de Caele.mx.
 
 ## Ejecutar localmente
 
