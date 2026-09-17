@@ -49,21 +49,27 @@ test('all seven illustrations are continuous strokes without pen lifts', () => {
   }
 });
 
-test('the real cover fits the envelope with uniform scale at mobile and desktop sizes', () => {
+test('a landscape envelope contains the real letter at mobile, desktop and short landscape sizes', () => {
   for (const [width, height, stageWidth, stageHeight] of [
     [276, 735, 280, 290], [328, 730, 350, 430], [388, 755, 400, 500],
     [710, 560, 768, 370], [1078, 560, 1200, 380], [1078, 560, 600, 180],
+    [230, 850, 248, 210], [620, 680, 400, 150],
   ]) {
     const card = { width, height, left: 20, top: 78 };
     const stage = { width: stageWidth, height: stageHeight, left: 24, top: 220 };
     const layout = art.envelopeLayout(card, stage);
     assert.ok(layout.scale > 0 && layout.scale < 1);
     assert.ok(layout.width <= stageWidth && layout.height <= stageHeight);
+    assert.ok(Math.abs(layout.width / layout.height - 1.6) < 1e-8, 'The envelope is always horizontal');
     assert.equal(layout.flapHeight, layout.height / 2, 'The flap tip and seal stay centered');
-    assert.ok(layout.cardX >= layout.left && layout.cardY >= layout.top);
-    assert.ok(layout.cardX + width * layout.scale <= layout.left + layout.width);
-    assert.ok(layout.cardY + height * layout.scale <= layout.top + layout.height);
-    assert.equal((width * layout.scale) / (height * layout.scale), width / height);
+    assert.ok(layout.top - layout.flapHeight >= stage.top - 1e-8, 'The opened flap fits above the pocket');
+    assert.ok(layout.top + layout.height <= stage.top + stage.height + 1e-8);
+    assert.equal(layout.rotation, height > width ? -90 : 0);
+    assert.ok(layout.cardCenterX - layout.cardWidth / 2 >= layout.left);
+    assert.ok(layout.cardCenterY - layout.cardHeight / 2 >= layout.top);
+    assert.ok(layout.cardCenterX + layout.cardWidth / 2 <= layout.left + layout.width);
+    assert.ok(layout.cardCenterY + layout.cardHeight / 2 <= layout.top + layout.height);
+    assert.ok(Math.abs((width * layout.scale) / (height * layout.scale) - width / height) < 1e-8);
   }
 });
 
