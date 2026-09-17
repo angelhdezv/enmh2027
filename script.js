@@ -33,6 +33,65 @@ let soundtrackUnavailable = false;
 let lineAnimator;
 let timelineAnimator;
 const openingAnimations = new Set();
+const openingSound = createOpeningSound();
+
+function createOpeningSound() {
+  const AudioContext = window.AudioContext || window.webkitAudioContext;
+  if (!AudioContext || !window.fetch) return { unlock() {}, play() {}, stop() {} };
+  const bytes = window.fetch('assets/audio/paper-open.mp3')
+    .then((response) => response.ok ? response.arrayBuffer() : null)
+    .catch(() => null);
+  let context;
+  let decoded;
+  let resumed;
+  let playback;
+  let generation = 0;
+
+  return {
+    // Resume in the seal's click gesture; playback can then follow the flap even
+    // when the fonts finish loading asynchronously. This never starts the music.
+    unlock() {
+      try {
+        context ||= new AudioContext();
+        decoded ||= bytes.then((data) => data ? context.decodeAudioData(data) : null).catch(() => null);
+        resumed = context.resume().catch(() => null);
+      } catch { /* The invitation remains usable without the optional effect. */ }
+    },
+    play() {
+      const run = ++generation;
+      const requestedAt = Date.now();
+      Promise.all([decoded, resumed]).then(([buffer]) => {
+        // Do not play a delayed rustle after a slow download, skip or hidden tab.
+        if (!buffer || run !== generation || document.hidden || Date.now() - requestedAt > 250 || context.state !== 'running') return;
+        const source = context.createBufferSource();
+        const gain = context.createGain();
+        source.buffer = buffer;
+        gain.gain.value = 0.5;
+        source.connect(gain);
+        gain.connect(context.destination);
+        const current = { source, gain };
+        playback = current;
+        source.onended = () => {
+          source.disconnect();
+          gain.disconnect();
+          if (playback === current) playback = null;
+        };
+        source.start();
+      }).catch(() => {});
+    },
+    stop() {
+      generation += 1;
+      if (!playback) return;
+      const { source, gain } = playback;
+      playback = null;
+      try {
+        gain.gain.setValueAtTime(gain.gain.value, context.currentTime);
+        gain.gain.linearRampToValueAtTime(0, context.currentTime + 0.025);
+        source.stop(context.currentTime + 0.025);
+      } catch { /* A naturally completed effect has already stopped. */ }
+    },
+  };
+}
 
 function showToast(message) {
   window.clearTimeout(toastTimer);
@@ -252,7 +311,7 @@ function placeCoverInEnvelope() {
     left: `${cardRect.left}px`, top: `${cardRect.top}px`,
     width: `${cardRect.width}px`, height: `${cardRect.height}px`,
     visibility: 'hidden',
-    transform: coverTransform(layout.cardX, layout.cardY),
+    transform: coverTransform(layout.cardCenterX, layout.cardCenterY),
   });
   cover.setAttribute('aria-hidden', 'true');
   cover.inert = true;
@@ -260,9 +319,11 @@ function placeCoverInEnvelope() {
   return true;
 }
 
-function coverTransform(x, y) {
+function coverTransform(centerX, centerY, rotation = coverGeometry.rotation) {
   const { cardRect, scale } = coverGeometry;
-  return `translate(${x - cardRect.left}px, ${y - cardRect.top}px) scale(${scale})`;
+  const x = centerX - cardRect.left - cardRect.width / 2;
+  const y = centerY - cardRect.top - cardRect.height / 2;
+  return `translate(${x}px, ${y}px) rotate(${rotation}deg) scale(${scale})`;
 }
 
 function animateOpening(element, keyframes, options) {
@@ -282,6 +343,7 @@ function finishOpening() {
   if (opening.hidden) return;
   openingRun += 1;
   opening.hidden = true;
+  openingSound.stop();
   cancelOpeningAnimations();
   restoreCover();
   opening.dataset.state = 'complete';
@@ -305,6 +367,7 @@ async function openExperience() {
     finishOpening();
     return;
   }
+  openingSound.unlock();
   openingFallback = window.setTimeout(finishOpening, 4500);
   try {
     if (document.fonts && document.fonts.status !== 'loaded') {
@@ -319,14 +382,16 @@ async function openExperience() {
     animateOpening($('.opening__hint'), [{ opacity: 1 }, { opacity: 0 }], { duration: 200 });
     // The closed flap and pocket conceal the paper; opening the flap uncovers it naturally.
     cover.style.visibility = 'visible';
+    openingSound.play();
     await animateOpening(flap, [
       { transform: 'perspective(1000px) rotateX(0deg)' },
       { transform: 'perspective(1000px) rotateX(-180deg)' },
     ], { duration: 500, easing: 'ease-in-out' });
     if (run !== openingRun) return;
     flap.style.zIndex = '2';
-    const { cardX, cardY, top } = coverGeometry;
-    const emerged = coverTransform(cardX, cardY - Math.min(90, coverGeometry.height * 0.2));
+    const { cardCenterX, cardCenterY, top, cardRect, scale } = coverGeometry;
+    const emergedY = Math.max(cardRect.height * scale / 2 + 24, cardCenterY - Math.min(90, coverGeometry.height * 0.35));
+    const emerged = coverTransform(cardCenterX, emergedY, 0);
     const drop = window.innerHeight - top + 120;
     for (const layer of document.querySelectorAll('.envelope-layer')) {
       const rotation = layer === flap ? ' perspective(1000px) rotateX(-180deg)' : '';
@@ -336,7 +401,8 @@ async function openExperience() {
       ], { duration: 780, easing: ease });
     }
     await animateOpening(cover, [
-      { transform: coverTransform(cardX, cardY) },
+      { transform: coverTransform(cardCenterX, cardCenterY) },
+      { transform: coverTransform(cardCenterX, cardCenterY - 12), offset: 0.22 },
       { transform: emerged },
     ], { duration: 780, easing: ease });
     if (run !== openingRun) return;
@@ -345,7 +411,7 @@ async function openExperience() {
     animateOpening($('.opening__top'), [{ opacity: 1 }, { opacity: 0 }], { duration: 250 });
     await animateOpening(cover, [
       { transform: emerged },
-      { transform: 'translate(0px, 0px) scale(1)' },
+      { transform: 'translate(0px, 0px) rotate(0deg) scale(1)' },
     ], { duration: 650, easing: ease });
     if (run === openingRun) finishOpening();
   } catch {
@@ -362,6 +428,7 @@ function skipExperience() {
 function resetOpening() {
   openingRun += 1;
   cancelOpeningAnimations();
+  openingSound.stop();
   restoreCover();
   opening.hidden = false;
   opening.dataset.state = 'idle';
@@ -457,6 +524,9 @@ $('#skipToInvitation').addEventListener('click', (event) => {
   if (!opening.hidden) { event.preventDefault(); skipExperience(); }
 });
 document.addEventListener('keydown', trapOpeningFocus);
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden) openingSound.stop();
+});
 $('#addCalendar').addEventListener('click', downloadCalendarEvent);
 $('#shareInvitation').addEventListener('click', share);
 musicToggle.addEventListener('click', toggleSoundtrack);

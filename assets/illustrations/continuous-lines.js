@@ -55,14 +55,27 @@ const ENMH_ART = (() => {
     return { index, progress, offset: 1 - progress, phase };
   }
 
-  // Uniform scale preserves the cover's wrapping and proportions inside the envelope.
+  // The envelope is always landscape. A portrait letter fits sideways, as on paper;
+  // a uniform scale and rotation keep its final wrapping and proportions intact.
   function envelopeLayout(card, stage) {
-    const width = Math.min(520, stage.width * 0.9, stage.height * card.width / card.height);
-    const scale = width * 0.94 / card.width;
-    const height = card.height * scale / 0.95;
+    const aspect = 1.6;
+    // Reserve space above the pocket for the flap when it opens.
+    const width = Math.min(560, stage.width * 0.96, stage.height * aspect / 1.5);
+    const height = width / aspect;
+    const flapHeight = height / 2;
+    const rotation = card.height > card.width ? -90 : 0;
+    const orientedWidth = rotation ? card.height : card.width;
+    const orientedHeight = rotation ? card.width : card.height;
+    const scale = Math.min(width * 0.92 / orientedWidth, height * 0.9 / orientedHeight, 0.94);
     const left = stage.left + (stage.width - width) / 2;
-    const top = stage.top + (stage.height - height) / 2;
-    return { width, height, left, top, scale, flapHeight: height * 0.5, cardX: left + width * 0.03, cardY: top + height * 0.025 };
+    const top = stage.top + flapHeight + (stage.height - height - flapHeight) / 2;
+    return {
+      width, height, left, top, scale, rotation, flapHeight,
+      cardWidth: orientedWidth * scale,
+      cardHeight: orientedHeight * scale,
+      cardCenterX: left + width / 2,
+      cardCenterY: top + height / 2,
+    };
   }
 
   // Map the document's scroll position to the line, in both directions.

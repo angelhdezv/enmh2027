@@ -37,7 +37,7 @@ svg { display: block; }
 .paper { background: var(--paper); border: 1px solid var(--wine-700); padding: 0 24px; }
 .paper__header { min-height: 74px; display: flex; align-items: center; gap: 22px; border-bottom: 1px solid var(--line); }
 .lockup { display: inline-flex; align-items: center; gap: 10px; text-decoration: none; white-space: nowrap; }
-.lockup img { display: block; width: 25px; height: 32px; object-fit: contain; }
+.lockup img { display: block; flex-shrink: 0; width: 25px; height: 32px; object-fit: contain; }
 .lockup span { font-family: var(--serif); font-size: 21px; letter-spacing: .025em; }
 .header__generation { padding-left: 22px; border-left: 1px solid var(--line); font-size: 9px; letter-spacing: .2em; text-transform: uppercase; }
 .paper__tools { display: flex; align-items: center; gap: 8px; margin-left: auto; }
@@ -228,7 +228,7 @@ html:not(.js) .paper__tools, html:not(.js) #addCalendar, html:not(.js) #openDres
 .wax-seal:active { box-shadow: 0 1px 2px #2b0b1e5c, 0 2px 5px #2d0b1d33, inset 0 0 0 3px #52203566; }
 .wax-seal__crest { display: block; width: 42px; height: 50px; object-fit: contain; }
 .opening__hint { position: relative; z-index: 7; align-self: end; text-align: center; font-size: 12px; letter-spacing: .1em; }
-.cover.is-travelling { position: fixed; z-index: 3; margin: 0; transform-origin: 0 0; will-change: transform; color: var(--ink); box-shadow: 0 2px 12px #36102314; }
+.cover.is-travelling { position: fixed; z-index: 3; margin: 0; transform-origin: 50% 50%; will-change: transform; color: var(--ink); box-shadow: 0 2px 12px #36102314; }
 .intro-active, .dialog-active { overflow: hidden; }
 .js.intro-active .invitation { visibility: hidden; }
 .js.intro-active.intro-revealing .invitation { visibility: visible; }
@@ -331,8 +331,8 @@ html:not(.js) .dress-dialog__close { display: none; }
 @media (max-width: 360px) {
   .invitation { padding-inline: 8px; margin-block: 8px; }
   .paper { padding-inline: 14px; }
-  .lockup img { display: none; }
-  .lockup span { font-size: 18px; }
+  .lockup img { width: 28px; height: 36px; }
+  .lockup span { display: none; }
   .cover h1 { font-size: 34px; }
   .cover__school { letter-spacing: .16em; }
   .event-date { font-size: 23px; }

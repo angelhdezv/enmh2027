@@ -4,9 +4,11 @@ Invitación digital para la Generación 2027 de **Médico Cirujano y Homeópata*
 
 ## Concepto
 
-La experiencia comienza con un sobre de cartulina guinda y un sello de lacre mate con el escudo blanco de la escuela. El grano fino del papel, el borde de la pestaña y las sombras de contacto dan profundidad al sobre; la cara conserva una superficie continua y la pestaña cierra en su centro. La **misma portada del documento** sale del sobre y se coloca en su posición final: conserva contenido, tipografía y proporciones durante toda la apertura. No se intercambia por una miniatura ni por una imagen.
+La experiencia comienza con un sobre horizontal de cartulina guinda y un sello de lacre mate con el escudo blanco de la escuela. Su proporción de 1.6:1 se conserva en móvil, escritorio y orientación horizontal. El grano fino del papel, el borde de la pestaña y las sombras de contacto dan profundidad al sobre; la cara conserva una superficie continua y la pestaña cierra en su centro. La **misma portada del documento** sale del sobre y se coloca en su posición final: conserva contenido, tipografía y proporciones durante toda la apertura. Una portada vertical se guarda girada dentro del sobre y se endereza después de empezar a salir. No se intercambia por una miniatura ni por una imagen.
 
 La versión `v0.1.0` usa una superficie marfil, tipografía editorial y dibujos de una sola línea. La portada ocupa todo el ancho; después aparecen la cuenta regresiva y dos columnas para itinerario, vestimenta y boleto. En móvil el contenido se organiza en una sola columna.
+
+En pantallas de hasta 360 px, el encabezado prioriza el escudo y oculta las letras «ENMH · IPN». El enlace conserva su nombre accesible y los controles de música y compartir mantienen sus áreas táctiles.
 
 Cada ilustración se dibuja durante **2 segundos**, permanece completa **1 segundo** y se desdibuja durante **2 segundos**, recorriendo el mismo trazo en sentido inverso. No se utilizan fundidos entre imágenes.
 
@@ -56,6 +58,8 @@ El calendario se descarga como evento de día completo para no inventar un horar
 ## Música
 
 La canción comienza al tocar el sello y puede pausarse o reanudarse desde el control circular del encabezado. Tanto el disco como el botón explícito de play/pausa controlan el mismo audio y reflejan su estado. El disco gira únicamente mientras la canción se reproduce. Estos controles no pausan las ilustraciones. El archivo de audio no se ha modificado.
+
+La pestaña y la salida de la carta se acompañan de un efecto de papel de 1.32 segundos. Se prepara al cargar y Web Audio se habilita al tocar el sello; su reproducción comienza junto con la animación. Saltar la introducción, cambiar de tamaño o esconder la pestaña cancela el efecto. No se reproduce en bucle ni al alternar la música. Si no puede cargarse o Web Audio no está disponible, la invitación continúa normalmente. Las fuentes del efecto están en `assets/audio/CREDITS.md`.
 
 ## Archivos
 
